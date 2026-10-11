@@ -1705,6 +1705,11 @@ impl Checker {
         if s1.len() != s2.len() {
             return s1.len() as i32 - s2.len() as i32;
         }
+        // SharedList and alias clones often share the same immutable storage.
+        // Every element would compare with itself and return 0 without effects.
+        if s1.as_ptr() == s2.as_ptr() {
+            return 0;
+        }
         for (&t1, &t2) in s1.iter().zip(s2) {
             // PERF: unionfn1. `compare_types` of a type and itself is 0.
             if t1 == t2 {
