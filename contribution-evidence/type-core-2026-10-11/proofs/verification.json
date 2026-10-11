@@ -1,0 +1,17 @@
+{
+  "toolchain": "Lean (version 4.33.1, arm64-apple-darwin24.6.0, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)",
+  "checks": [
+    {
+      "file": "UniqueDeclarationStorage.lean",
+      "sha256": "bb032a8aa7ea38cf7bdddb71ecae26248dfbbcbc6b47cc85f36841edc6dda303",
+      "exit": 0,
+      "output": "'UniqueDeclarationStorage.add_preserves_order' depends on axioms: [propext, Quot.sound]\n'UniqueDeclarationStorage.duplicate_allocates_nothing' depends on axioms: [propext, Quot.sound]\n'UniqueDeclarationStorage.collect_preserves_order' depends on axioms: [propext, Quot.sound]\n'UniqueDeclarationStorage.storage_depends_on_unique_count' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+    },
+    {
+      "file": "SharedSliceIdentity.lean",
+      "sha256": "87b3bcfa87129d7d4c66f23ff5e89aab7cc5568d972fb2a95177753d524db8e9",
+      "exit": 0,
+      "output": "'SharedSliceIdentity.self_comparisons_inert' depends on axioms: [propext]\n"
+    }
+  ]
+}

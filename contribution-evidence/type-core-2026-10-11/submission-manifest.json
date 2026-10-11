@@ -1,0 +1,77 @@
+{
+  "base": "bf34f21ae40b221ea9def389778d2f90ec950398",
+  "repository": "pingdotgg/ts-rust",
+  "fork": "Unclip1843/ts-rust",
+  "items": [
+    {
+      "id": "1-owned-insertion",
+      "title": "perf(checker): insert into owned type vectors in place",
+      "branch": "perf-owned-type-insertion",
+      "files": [
+        "crates/ts_goport/src/checker/checker_p28.rs",
+        "crates/ts_goport/src/checker/checker_p29.rs"
+      ],
+      "patchSha256": "e52ad6a99bf28fbddff5fe872694182ec7c59f1fb614ab32a930c6312cee3544",
+      "sourceSha256": {
+        "crates/ts_goport/src/checker/checker_p28.rs": "9d1aa03445a7f27f2f7819446d6cff2d81b13c5782eb238f68a1ac6d90feb0aa",
+        "crates/ts_goport/src/checker/checker_p29.rs": "cb9b2d735de0988041d7cbc0d746d59b48d2ad1fb27b1d8e98603700cce6755b"
+      },
+      "format": [
+        {
+          "path": "crates/ts_goport/src/checker/checker_p28.rs",
+          "exit": 0,
+          "output": ""
+        },
+        {
+          "path": "crates/ts_goport/src/checker/checker_p29.rs",
+          "exit": 0,
+          "output": ""
+        }
+      ],
+      "buildAndRuntimeTests": "NOT_RUN_ON_THIS_INDEPENDENT_HEAD",
+      "draft": true
+    },
+    {
+      "id": "2-declaration-storage",
+      "title": "perf(checker): size declaration storage by unique entries",
+      "branch": "perf-unique-declaration-storage",
+      "files": [
+        "crates/ts_goport/src/checker/checker_p24.rs"
+      ],
+      "patchSha256": "4cdf43ba482365a424eb0460be4d109bebc25dcb2fcf9343250e344fb5e00988",
+      "sourceSha256": {
+        "crates/ts_goport/src/checker/checker_p24.rs": "39fcb798ccd774d10a4acfa9da429365a27636f50a07eeab6fb17a4a71b01472"
+      },
+      "format": [
+        {
+          "path": "crates/ts_goport/src/checker/checker_p24.rs",
+          "exit": 0,
+          "output": ""
+        }
+      ],
+      "buildAndRuntimeTests": "NOT_RUN_ON_THIS_INDEPENDENT_HEAD",
+      "draft": true
+    },
+    {
+      "id": "3-shared-slice",
+      "title": "perf(checker): skip comparisons of identical type slices",
+      "branch": "perf-identical-type-slices",
+      "files": [
+        "crates/ts_goport/src/checker/utilities_p1.rs"
+      ],
+      "patchSha256": "4f5f85f5002f6e9804e57cd057f7e0c7ccc634ede9a39c8a4cfd06f8ace6e170",
+      "sourceSha256": {
+        "crates/ts_goport/src/checker/utilities_p1.rs": "b45bddb59895c92d9df99609c7c0f7c5a5e3832ee2a0059973ece1ae8d55bc76"
+      },
+      "format": [
+        {
+          "path": "crates/ts_goport/src/checker/utilities_p1.rs",
+          "exit": 0,
+          "output": ""
+        }
+      ],
+      "buildAndRuntimeTests": "NOT_RUN_ON_THIS_INDEPENDENT_HEAD",
+      "draft": true
+    }
+  ]
+}

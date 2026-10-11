@@ -1,0 +1,30 @@
+--- a/crates/ts_goport/src/checker/checker_p24.rs
++++ b/crates/ts_goport/src/checker/checker_p24.rs
+@@ -492,14 +492,13 @@
+         if prop_set.is_empty() {
+             prop_set.push(single_prop);
+         }
+-        let declaration_count = prop_set
+-            .iter()
+-            .map(|&prop| self.sym(prop).declarations.len())
+-            .sum();
+         // PERF: the declarations are collected on the stack. A list of 0 or 1
+         // declarations is stored with no heap list (no malloc). A longer list
+         // moves into one `Vec` for `Declarations::from`, as before.
+-        let mut declarations: SmallVec<[Node; 4]> = SmallVec::with_capacity(declaration_count);
++        // Size by unique declarations, not their repeated occurrences across
++        // constituents. The resulting symbol retains this buffer, so reserving
++        // the occurrence count can retain a Cartesian product's worth of slack.
++        let mut declarations: SmallVec<[Node; 4]> = SmallVec::new();
+         // PERF: Go `core.AppendIfUnique` scans the list for each declaration,
+         // which is quadratic in a long list (blueprint: 43k calls with 181
+         // declarations, 178 of them distinct; the scans were about half of
+@@ -525,7 +524,7 @@
+             }
+             for &declaration in self.sym(prop).declarations.iter() {
+                 // Go: core.AppendIfUnique
+-                declaration_set.add(&mut declarations, declaration, declaration_count);
++                declaration_set.add(&mut declarations, declaration, 0);
+             }
+             let t = self.get_type_of_symbol(prop);
+             if first_type.is_nil() {

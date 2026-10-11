@@ -1,0 +1,116 @@
+{
+  "reviewer": "/root/compiler_reviewer",
+  "createdUtc": "2026-10-11T05:57:31.522889+00:00",
+  "verdict": "PASS_LOCAL_SEMANTICS_AND_EXPANDED_QUALIFICATION_NOT_OFFICIAL_ACCEPTANCE",
+  "source": {
+    "compilerLineage": "retained round3 storage candidate; withdrawn round4 and round5 changes absent",
+    "verifiedHashes": {
+      "crates/ts_goport/src/checker/checker_p24.rs": "39fcb798ccd774d10a4acfa9da429365a27636f50a07eeab6fb17a4a71b01472",
+      "crates/ts_goport/src/checker/checker_p28.rs": "87f7cd8551b007c1e5f19c141090b4c547c7d6a9eeb76694876ac8c2660007ed",
+      "crates/ts_goport/src/checker/checker_p29.rs": "22d2e1b86f57400c792598ef7885ed5bff8bb0d5f75b022eb13ab9bdb76a848e",
+      "crates/ts_goport/src/checker/utilities_p1.rs": "800f7ae2caca79bc47ca0cd320c1bef20d128c73fbf4a56ae8d15f204626d4ed",
+      "proofs/IntersectionPruning.lean": "347c02a52654dda4910c1ed64fce1d28267ecc5da5286f38530bd026568d50af",
+      "proofs/UniqueDeclarationStorage.lean": "bb032a8aa7ea38cf7bdddb71ecae26248dfbbcbc6b47cc85f36841edc6dda303",
+      "proofs/ScopedComparisonCache.lean": "fd656e5c6c0e2df2a903620886abfc4ac69bff36b239db8d45c9ec4a9bdfa4ef"
+    },
+    "allRecordedHashesMatchCurrentFiles": true,
+    "wholeCheckoutFingerprintAtReview": "1c7d5c3e24b0376355fd8b2174dd06e2862a0e5ad1219eb24392fc625735f407",
+    "wholeCheckoutFiles": 1822,
+    "fingerprintQualification": "Includes documentation/history; precise compiler/proof binding is the seven verified hashes."
+  },
+  "binaries": {
+    "goBaselinesSha256": "45a792d758d4f47ae6f0f64f06571911bdc6fd6042826b89a6874f895c4244f1",
+    "retainedCandidateTsgoSha256": "58b623f0a2f681625a71716bece9565481d12bf1dbd6fce5dc9cd07487d83599",
+    "localBeforeTsgoSha256": "cd702ccd066f8f692350df89b56959955ef08ffd20a5ae3bd3125914f247a684",
+    "oracleSha256": "87c7767e0369afd43cf5a14bf5b26294dc6815122ded00ae8b8925ff2f57697b",
+    "oraclePin": "673a5f17d713bdc8c7185f18a9c11e3c4ac5d781"
+  },
+  "staticReview": {
+    "decision": "PASS_LOCAL",
+    "preservedContracts": [
+      "ordered intersection traversal, original complexity guard and normalization effects",
+      "unique declaration retained storage with unchanged deduplication order",
+      "directional completed-pair cache scoped to same immutable Checker and worker ID state",
+      "same-slice identity shortcut skips inert comparisons",
+      "four owned-vector insertions preserve search, insertion order and observable outputs"
+    ],
+    "proofScope": "Kernel-checked abstract intersection pruning/domain/order laws, unique retained storage laws, directional cache stability/state and adaptive finite search, identity comparison trace. Rust correspondence and eligibility predicates manually reviewed; not extracted Rust proof or whole TypeScript semantics proof. Temporary DeclarationSet may allocate on duplicate; retained-list claim only.",
+    "proofLog": "../round3/storage-proof.log",
+    "proofLogSha256": "390f0313c5fd159480ab86558f45a03ac9e9620eed7d987107d0ea31d421ecd4",
+    "bidirectionalProofAndImplementationRetained": false
+  },
+  "localEvidence": {
+    "workspace": {
+      "retainedPasses": 629,
+      "newFailures": 0,
+      "unchangedFailures": 1,
+      "ignored": 2,
+      "failure": "build_watch_keeps_the_first_dts_parse_of_a_cycle: same scratch ancestry package.json effect retained",
+      "evidence": "../round3/workspace-comparison.json"
+    },
+    "defaultGoBaselines": {
+      "originalPasses": 1529,
+      "originalFailures": 2,
+      "originalIgnored": 1,
+      "originalFiltered": 1,
+      "originalExit": 101,
+      "environmentRerunPasses": 2,
+      "combinedDistinctPassingNames": 1531,
+      "singleAllGreenOriginalRun": false,
+      "ruling": "Same frozen binary; only socket address spelling shortened to 86 bytes, resolving to same required scratch. Environment repair only, scope exactly two API-session tests. Original logs retained.",
+      "ignored": "compiler_runner::test_submodule has no corpus in this merged pin layout",
+      "filtered": "compiler_runner::test_local fully run in four shards"
+    },
+    "compilerConformance": {
+      "allFourShardsExitZero": true,
+      "compiledConfigurations": 13468,
+      "passingSubtestRows": 133390,
+      "failedSubtestRows": 0,
+      "skippedSubtestRows": 1728,
+      "baselineTrackingRows": 66216,
+      "distinctNonTrackingResultKeys": 135118,
+      "overlappingResultKeys": 0,
+      "skips": "1720 config rows and 8 output rows; preserved existing runner decisions, not removed coverage",
+      "beforeVsAcceptedPerNameComparison": "Not performed here; candidate runs compare byte baselines at pinned Go."
+    },
+    "transpile": {
+      "passingSubtestRows": 41,
+      "baselineTrackingRows": 41
+    },
+    "npm": {
+      "auditorEvidence": "np-auditor.json",
+      "all13UnchangedTestFiles": true,
+      "passingTestsEachSide": 879,
+      "passingSuitesEachSide": 193,
+      "lostAbsentUnrunFailedSkippedTests": 0,
+      "basis": "Independent auditor per-name comparison; local original and candidate, not accepted R188"
+    },
+    "projects": {
+      "query": "Original/candidate each two complete runs exit0, empty stdout/stderr; pinned Go same.",
+      "hono": "Original/candidate each two complete runs exit2; pinned Go same 205-byte stdout containing two TS7031 children/nonce at src/helper/css/index.ts:192, empty stderr.",
+      "scope": "Pinned project source/config and local frozen-lock installs; Hono Bun1.4.3 differs from Linux recipe1.2.20; not exact accepted input manifest or types/symbol qualification."
+    },
+    "fmtClippy": "Round3 existing logs PASS; compiler files unchanged",
+    "performance": "Round3 primary fixture aggregate advantage retained; later round4/round5 experiments withdrawn. Expanded suite/project runs are not performance benchmarks."
+  },
+  "remainingOfficialAcceptanceGaps": [
+    "No official Linux protected runner receipts or comparison against accepted R188 complete test/reference result sets; Linux-only cfg tests not qualified by macOS build.",
+    "Official full gate project/corpus/editor/determinism/build/type-symbol coverage and exact accepted input manifests remain unrun/unrecovered.",
+    "Accepted LSP/API trace golden batteries and per-request oracle comparisons remain unrun/unrecovered; npm and Rust LSP tests do not substitute those receipts.",
+    "No new deliberate-error Query milestone check or project type/symbol dumps in this evidence.",
+    "Exact accepted npm baseline receipt unrecovered; local starting binary is not accepted R188.",
+    "One inherited watch test failure remains under scratch-only policy; preserve rather than hide/normalize it."
+  ],
+  "acceptedState": "R188 unchanged; no official acceptance verdict or state transition authorized by this local review.",
+  "evidenceHashes": {
+    "source-hashes.json": "8d4a03b54a1d3b1ed176b6c85830b03f41bc3032119f4cab59a6e273f711b1f7",
+    "existing-suites-runs.json": "b34d0bea6ade44799916053099305551ecd7558af4e916f504211280d0ff98dc",
+    "api-socket-rerun/result.json": "4da2965a6ab008b25ec75047c5ab78ddd6bf984be4f0dcc09eac02ecff0bc58a",
+    "np-auditor.json": "bec35d93c33552a22e4526f80ac49047ddcc1bcf83fbef197e993d4b7e21db41",
+    "oracle-build.json": "a36cb68a52fe5a96da4a12d3ba8fa0f7d28e22a46ca2fdaf224503f6f268b312",
+    "projects/oracle-results.json": "85eea56f8d79afdca8417b63e0675aa01a8b93d354a3d2e4165d0a6ffbbb38ca",
+    "projects/query-runs/result.json": "2b14bc638d68c883403a3d94de89507153614af63a5db54860c90e001a8b4d40",
+    "projects/hono-runs/result.json": "7dc2504220baf6ba0d0e592b4d772ab1699e555ca2063cbca133ec57ef2fe5cb"
+  },
+  "reviewerExecution": "Read-only source/log review and deterministic hash/count computations; no compiler source/expectation edits, Cargo, tests, compiler or Lean runs."
+}

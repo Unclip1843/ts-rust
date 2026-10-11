@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "status": "EXPANDED_LOCAL_CHECKS_COMPLETED_OFFICIAL_ACCEPTANCE_PENDING",
+  "measuredBenefitRecord": "../report.json",
+  "sourceHashes": {
+    "crates/ts_goport/src/checker/checker_p24.rs": "39fcb798ccd774d10a4acfa9da429365a27636f50a07eeab6fb17a4a71b01472",
+    "crates/ts_goport/src/checker/checker_p28.rs": "87f7cd8551b007c1e5f19c141090b4c547c7d6a9eeb76694876ac8c2660007ed",
+    "crates/ts_goport/src/checker/checker_p29.rs": "22d2e1b86f57400c792598ef7885ed5bff8bb0d5f75b022eb13ab9bdb76a848e",
+    "crates/ts_goport/src/checker/utilities_p1.rs": "800f7ae2caca79bc47ca0cd320c1bef20d128c73fbf4a56ae8d15f204626d4ed",
+    "proofs/IntersectionPruning.lean": "347c02a52654dda4910c1ed64fce1d28267ecc5da5286f38530bd026568d50af",
+    "proofs/UniqueDeclarationStorage.lean": "bb032a8aa7ea38cf7bdddb71ecae26248dfbbcbc6b47cc85f36841edc6dda303",
+    "proofs/ScopedComparisonCache.lean": "fd656e5c6c0e2df2a903620886abfc4ac69bff36b239db8d45c9ec4a9bdfa4ef"
+  },
+  "candidateBinarySha256": "58b623f0a2f681625a71716bece9565481d12bf1dbd6fce5dc9cd07487d83599",
+  "testBinarySha256": "45a792d758d4f47ae6f0f64f06571911bdc6fd6042826b89a6874f895c4244f1",
+  "pinnedGoBinarySha256": "87c7767e0369afd43cf5a14bf5b26294dc6815122ded00ae8b8925ff2f57697b",
+  "fixtureAndOraclePin": "673a5f17d713bdc8c7185f18a9c11e3c4ac5d781",
+  "compilerCorpus": {
+    "sourceFiles": 12400,
+    "configuredCasesCompiled": 13468,
+    "passingChecks": 133390,
+    "failedChecks": 0,
+    "explicitSkips": 1728,
+    "skipsByKind": {
+      "unsupportedConfiguration": 1720,
+      "output": 8
+    },
+    "shards": [
+      {
+        "shard": "0/4",
+        "counts": {
+          "pass": 33270,
+          "baseline": 16522,
+          "skip": 401
+        },
+        "exit": 0
+      },
+      {
+        "shard": "1/4",
+        "counts": {
+          "pass": 33286,
+          "baseline": 16526,
+          "skip": 454
+        },
+        "exit": 0
+      },
+      {
+        "shard": "2/4",
+        "counts": {
+          "pass": 33527,
+          "baseline": 16634,
+          "skip": 443
+        },
+        "exit": 0
+      },
+      {
+        "shard": "3/4",
+        "counts": {
+          "pass": 33307,
+          "baseline": 16534,
+          "skip": 430
+        },
+        "exit": 0
+      }
+    ],
+    "coverage": "Compile, diagnostics, content mapping, emit, source maps, types, symbols, union ordering, parent pointers and module resolution where applicable. Counts describe checks, not 133,390 distinct source files."
+  },
+  "defaultBaselines": {
+    "listedTests": 1533,
+    "initialRun": {
+      "passed": 1529,
+      "failed": 2,
+      "ignored": 1,
+      "filtered": 1,
+      "exit": 101
+    },
+    "reviewedReruns": {
+      "passed": 2,
+      "failed": 0,
+      "sameBinary": true,
+      "reason": "The absolute scratch path exceeded macOS Unix socket address length; relative TMPDIR spelling shortened each address to 86 bytes while resolving to authorized scratch. No compiler/expectation change.",
+      "tests": [
+        "project_lsp::lsp_server_apisession_test::api_callback_wait_serves_shutdown_and_exit_behind_other_messages",
+        "project_lsp::lsp_server_apisession_test::api_session_keeps_lsp_served"
+      ]
+    },
+    "observedPassingDefaultNamesAfterRerun": 1531,
+    "ignored": "compiler_runner::test_submodule: the pinned merged repository layout has no separate submodule suite.",
+    "filtered": "compiler_runner::test_local: separately executed in all four full shards.",
+    "note": "Initial failures remain in default-test-results.txt.gz; do not rewrite the initial run as all green."
+  },
+  "transpile": {
+    "passingChecks": 41,
+    "failedChecks": 0,
+    "sourceFiles": 24,
+    "note": "Executed within default baselines; not an extra independent test count."
+  },
+  "npmCompatibility": {
+    "beforePassed": 879,
+    "candidatePassed": 879,
+    "lost": 0,
+    "absent": 0,
+    "skipped": 0,
+    "files": 13,
+    "suiteNodesEach": 193,
+    "exitEach": 0,
+    "comparisonBase": "Original local HEAD binary; not reconstructed R188 result receipts."
+  },
+  "ordinaryProjects": [
+    {
+      "name": "query",
+      "originalAndCandidateRunsEach": 2,
+      "allMatchPinnedGo": true,
+      "exit": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diagnostics": 0,
+      "sourceBytesUnchanged": true,
+      "scope": "Exact pinned Query source and unchanged query-core config; locked pnpm install and upstream declaration builds; diagnostics only, not Linux bound/gate or typesym qualification",
+      "diagnosticText": ""
+    },
+    {
+      "name": "hono",
+      "originalAndCandidateRunsEach": 2,
+      "allMatchPinnedGo": true,
+      "exit": 2,
+      "stdoutSha256": "5839aa61cfc707082963101a92aa4263902367046ddaff64d5bd67a938537735",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diagnostics": 2,
+      "sourceBytesUnchanged": true,
+      "scope": "Exact pinned Hono source and unchanged config; local macOS dependency install; diagnostics only, not Linux bound/gate or typesym qualification",
+      "diagnosticText": "src/helper/css/index.ts(192,31): error TS7031: Binding element 'children' implicitly has an 'any' type.\nsrc/helper/css/index.ts(192,41): error TS7031: Binding element 'nonce' implicitly has an 'any' type.\n"
+    }
+  ],
+  "priorWorkspaceComparison": {
+    "retained": 629,
+    "lost": 0,
+    "absent": 0,
+    "recovered": 0,
+    "unchangedFailures": 1,
+    "newFailures": 0,
+    "beforeCounts": {
+      "ok": 629,
+      "FAILED": 1,
+      "ignored": 2
+    },
+    "afterCounts": {
+      "ok": 629,
+      "FAILED": 1,
+      "ignored": 2
+    },
+    "unchangedFailureNames": [
+      "multi_program::build_watch_keeps_the_first_dts_parse_of_a_cycle"
+    ]
+  },
+  "reproduction": {
+    "compilerBuild": [
+      "cargo",
+      "test",
+      "--release",
+      "--locked",
+      "-p",
+      "ts_goport",
+      "--test",
+      "go_baselines",
+      "--no-run"
+    ],
+    "compilerDefault": [
+      "go_baselines",
+      "--exact",
+      "--skip",
+      "compiler_runner::test_local",
+      "--test-threads",
+      "1"
+    ],
+    "compilerShards": "COMPILER_RUNNER_SHARD=i/4 and COMPILER_RUNNER_JOBS=2, for all i=0,1,2,3: go_baselines --exact compiler_runner::test_local --test-threads 1; separate result/tmp/track paths per invocation.",
+    "pinEnvironment": "TS_GO_REPO points to the unmodified pinned tsc directory. No selection filter or expectation edits.",
+    "npm": "Unchanged 13 upstream native-preview test files, existing np-suite reporter, Node --conditions @typescript/source --test --test-concurrency=2; original and candidate binaries in separate scratch package trees.",
+    "projectInputs": "Exact pinned Query/Hono commits and lock hashes from repository preparation recipes. Local macOS installs preserve source bytes; Query uses pinned pnpm11.9.0 and upstream declaration builds. Hono uses local Bun1.4.3 instead of Linux recipe1.2.20.",
+    "performance": "No performance claim from these runs: some builds/install/checks overlapped. Earlier interleaved benchmark evidence remains separate."
+  },
+  "remainingGaps": [
+    "Official R188 per-name/result/cache artifacts are missing locally and documented owner hosts zbook/dbook-lan do not resolve from this Mac.",
+    "Official Linux runner and Linux-only behavior are unrun; canonical runner needs systemd,bwrap and associated project/corpus/cache bundle.",
+    "Saved LSP/API golden-trace batteries, full gate/type-symbol project dumps and exact Linux bound-run input manifests remain unavailable.",
+    "No claim of an all-green workspace: one ancestor-package.json watch failure remains identical before/after; two ignored snapshot-writer tests remain ignored.",
+    "These local results do not amend accepted R188 or establish upstream merge acceptance."
+  ],
+  "artifacts": {
+    "test-list.txt.gz": {
+      "sha256": "d09e1bbdfdb90c81cdffa163c1e0a4c2b16810f67478cd1a093c410aebe9b304",
+      "uncompressedSha256": "4e3b0d0ed04186442473279a7cb9924e63d79364eb16e75a3b91251281be7976",
+      "uncompressedBytes": 126112
+    },
+    "default-test-results.txt.gz": {
+      "sha256": "2ceb9da56b7573a10844d552567d77829d5651455889c5b9aef142fd804b4fa4",
+      "uncompressedSha256": "58fbee3dce82bb0ff916efdebcfe7d3470e5c33f0279f409f0897189f611978e",
+      "uncompressedBytes": 121544
+    },
+    "transpile-results.tsv.gz": {
+      "sha256": "652f61e39e1415687b435d9311284bd18c4d421cd40e9013c5aceb572060f490",
+      "uncompressedSha256": "a49d9321db016d9c62d8e4487bc25583313e8f43da871496307d7f11ecddbec6",
+      "uncompressedBytes": 4845
+    },
+    "npm-before.jsonl.gz": {
+      "sha256": "3044e03493f73aa48fde478c2a8bbd9991a8db4b8c94935b45a5d2b9946bda0f",
+      "uncompressedSha256": "17a8f9bba763ec610bb62e98dea64ce2bb2d2e5c53e31341b078d7c5d62a3cde",
+      "uncompressedBytes": 156559
+    },
+    "npm-candidate.jsonl.gz": {
+      "sha256": "77a3bd8d7757b72cbf679802c42ca245861f164fde30d534273830b410b4cca5",
+      "uncompressedSha256": "ff371179e927441dea91dd629887ec6b1340b3180a4eb793fa98734e546e802f",
+      "uncompressedBytes": 156583
+    },
+    "compiler-0.tsv.gz": {
+      "sha256": "41bde6577af3c847aaacfe3d46c6122fd68d752b4ed586ec8f9d86d36cf3a152",
+      "uncompressedSha256": "04018a54141b1f55702e08a1b354e0b72dea09984f1a7af8e935ee18b7fefdad",
+      "uncompressedBytes": 3397469
+    },
+    "compiler-1.tsv.gz": {
+      "sha256": "35c7df1889428b8abcb956e54e70c5991ad7e0c2f100ce77febcdeecd97fa576",
+      "uncompressedSha256": "a20ca1e7bea365f8719c8d2b2c40c8277e8eeaadec5a6366ee687debc19c4694",
+      "uncompressedBytes": 3390762
+    },
+    "compiler-2.tsv.gz": {
+      "sha256": "bb3dbccbf31bf8385aa8c675f9f293b15c92bfba816ea5bed910136e213b04ba",
+      "uncompressedSha256": "47b17e6e9bd1ae80922e04f4cc806b3e1648e0d5a7e3b226fe072602f31d5751",
+      "uncompressedBytes": 3432954
+    },
+    "compiler-3.tsv.gz": {
+      "sha256": "ee99656368e71db9e5d6ed8eb7b8541196c682d1a7c19d5533b5393939303466",
+      "uncompressedSha256": "f01c8de766e52c496e31bf98e88eebea52b4daad65e002bfb2c0b51a8c3f6c38",
+      "uncompressedBytes": 3399123
+    },
+    "final-auditor.json": {
+      "sha256": "f14bad79f2ecd72c683bc39cfbff6fe6cefe803fcc94dcc1e5bb030b6874e6b6",
+      "rawSha256": "d29ee5d5402fd99e034618f1d83355823b32fc7dab30254fa02a906211e9035c",
+      "pathNormalization": "Absolute repository and session scratch prefixes replaced by $REPO and $SCRATCH; all verdict fields retained."
+    },
+    "final-reviewer.json": {
+      "sha256": "7f645961330ba361ebe4aa897bdcf82e37422e9e9f9756c37074fa29b896efe0",
+      "rawSha256": "7f645961330ba361ebe4aa897bdcf82e37422e9e9f9756c37074fa29b896efe0",
+      "pathNormalization": "Absolute repository and session scratch prefixes replaced by $REPO and $SCRATCH; all verdict fields retained."
+    }
+  },
+  "fullRawEvidence": "Retained in session evidence archive factored-type-core/full-qualification; repository copies above preserve complete per-case status records.",
+  "independentVerdicts": {
+    "auditor": {
+      "path": "final-auditor.json",
+      "verdict": "PASS-expanded-local-qualification-with-recorded-environment-failures-NOT-R188-ACCEPTANCE",
+      "scope": "Expanded local qualification only; official acceptance remains pending."
+    },
+    "reviewer": {
+      "path": "final-reviewer.json",
+      "verdict": "PASS_LOCAL_SEMANTICS_AND_EXPANDED_QUALIFICATION_NOT_OFFICIAL_ACCEPTANCE",
+      "scope": "Expanded local qualification only; official acceptance remains pending."
+    }
+  }
+}

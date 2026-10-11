@@ -1,0 +1,305 @@
+{
+  "schemaVersion": 1,
+  "kind": "local-optimization-evidence",
+  "status": "MEASURED_LOCAL_NOT_ACCEPTED",
+  "measurementDate": "2026-10-10",
+  "scope": "Combined retained type-core candidate; not a standalone benefit for any proposed PR and not a compiler-wide speedup.",
+  "identity": {
+    "baseCommit": "9f6ee6d147de1f8216c967e2a966cacbac295984",
+    "measuredSourceFingerprint": "fe64b5a4ffddf99517bf8f134d26ba49c2e030c8d3867b2b95ddce7355e90d0d",
+    "sourceHashes": {
+      "crates/ts_goport/src/checker/checker_p24.rs": "39fcb798ccd774d10a4acfa9da429365a27636f50a07eeab6fb17a4a71b01472",
+      "crates/ts_goport/src/checker/checker_p28.rs": "87f7cd8551b007c1e5f19c141090b4c547c7d6a9eeb76694876ac8c2660007ed",
+      "crates/ts_goport/src/checker/checker_p29.rs": "22d2e1b86f57400c792598ef7885ed5bff8bb0d5f75b022eb13ab9bdb76a848e",
+      "crates/ts_goport/src/checker/utilities_p1.rs": "800f7ae2caca79bc47ca0cd320c1bef20d128c73fbf4a56ae8d15f204626d4ed",
+      "proofs/IntersectionPruning.lean": "347c02a52654dda4910c1ed64fce1d28267ecc5da5286f38530bd026568d50af",
+      "proofs/UniqueDeclarationStorage.lean": "bb032a8aa7ea38cf7bdddb71ecae26248dfbbcbc6b47cc85f36841edc6dda303",
+      "proofs/ScopedComparisonCache.lean": "fd656e5c6c0e2df2a903620886abfc4ac69bff36b239db8d45c9ec4a9bdfa4ef"
+    },
+    "identityNote": "Compiler/proof hashes match retained source; later documentation/history edits change whole-tree fingerprints. R188 remains the accepted upstream state.",
+    "upstreamFixturePin": "673a5f17d713bdc8c7185f18a9c11e3c4ac5d781"
+  },
+  "headline": {
+    "fixture": "crossProductUnionIntersectionRepeatedPropDeclarationsNoOOM1.ts",
+    "beforeMedianWallMs": 4796.017583,
+    "candidateMedianWallMs": 3865.2725,
+    "elapsedReductionPercent": 19.406623659995027,
+    "beforeMedianPeakRssBytes": 542572544,
+    "candidateMedianPeakRssBytes": 520830976,
+    "peakRssReductionBytes": 21741568,
+    "peakRssReductionPercent": 4.00712646454886,
+    "evidence": "measurements.json",
+    "interpretation": "Descriptive seven-sample medians on one local fixture; not a confidence interval or universal gain."
+  },
+  "measurementMethod": {
+    "platform": "macOS arm64",
+    "profile": "release",
+    "rustToolchain": "1.93.0",
+    "env": {
+      "CARGO_INCREMENTAL": "0",
+      "RUSTFLAGS": "-C debuginfo=0",
+      "CARGO_BUILD_JOBS": "2"
+    },
+    "buildArgv": [
+      "cargo",
+      "build",
+      "--release",
+      "--locked",
+      "-p",
+      "ts_goport",
+      "--bin",
+      "tsgo"
+    ],
+    "timing": "Python perf_counter_ns wall time; /usr/bin/time -l CPU and peak RSS in bytes",
+    "warmupsPerBuildPerFixture": 1,
+    "measuredRunsPerBuildPerFixture": 7,
+    "buildOrderCycle": [
+      [
+        "before",
+        "round2",
+        "candidate"
+      ],
+      [
+        "candidate",
+        "before",
+        "round2"
+      ],
+      [
+        "round2",
+        "candidate",
+        "before"
+      ]
+    ],
+    "fixtureCommonArgv": [
+      "--noEmit",
+      "--pretty",
+      "false"
+    ],
+    "fixtureOptions": {
+      "crossProductUnionIntersectionRepeatedPropDeclarationsNoOOM1.ts": [
+        "--strict"
+      ],
+      "intersectionsOfLargeUnions.ts": [
+        "--strict",
+        "--target",
+        "es2015"
+      ],
+      "intersectionsOfLargeUnions2.ts": [
+        "--strict",
+        "--target",
+        "es2015",
+        "--module",
+        "commonjs"
+      ],
+      "conditionalTypeDiscriminatingLargeUnionRegularTypeFetchingSpeedReasonable.ts": [
+        "--target",
+        "es2015"
+      ],
+      "unionTypeWithRecursiveSubtypeReduction1.ts": [
+        "--target",
+        "es2015"
+      ],
+      "unionTypeWithRecursiveSubtypeReduction2.ts": [
+        "--target",
+        "es2015"
+      ],
+      "unionTypeWithRecursiveSubtypeReduction3.ts": [
+        "--target",
+        "es2015"
+      ],
+      "objectSubtypeReduction.ts": [
+        "--strict",
+        "--target",
+        "esnext"
+      ],
+      "unionReductionMutualSubtypes.ts": [
+        "--strict",
+        "--target",
+        "es2015"
+      ],
+      "typeVariableConstraintIntersections.ts": [
+        "--strict",
+        "--target",
+        "es2015"
+      ],
+      "intersectionTypeNormalization.ts": [
+        "--target",
+        "es2015"
+      ],
+      "divideAndConquerIntersections.ts": [
+        "--strict",
+        "--target",
+        "es2015"
+      ]
+    },
+    "loadRecordedPerRun": true,
+    "acceptanceProfileLimit": "Local release measurements are preliminary; repository acceptance timings use its existing goport-profile runner on supported hosts."
+  },
+  "prAttribution": [
+    {
+      "change": "Declaration-buffer allocation",
+      "status": "Combined patch has measured memory saving; measure isolated diff before assigning a standalone PR number."
+    },
+    {
+      "change": "Scoped directional comparison cache",
+      "status": "Combined patch has measured timing benefit; measure isolated diff and required correctness suites before PR acceptance."
+    },
+    {
+      "change": "Owned-vector insertion and shared-list shortcuts",
+      "status": "No incremental timing gain demonstrated versus round2: +0.331743% median on the headline fixture. Static copy removal is not a measured allocation count."
+    },
+    {
+      "change": "Intersection pruning",
+      "status": "No standalone measured performance benefit established."
+    }
+  ],
+  "checks": [
+    {
+      "area": "Local existing workspace tests",
+      "status": "NO_NEW_OBSERVED_REGRESSIONS_WITH_KNOWN_FAILURE",
+      "evidence": "existing-test-comparison.json",
+      "retained": 629,
+      "lost": 0,
+      "absent": 0,
+      "newFailures": 0,
+      "unchangedFailures": 1,
+      "ignored": 2,
+      "exitCode": 101,
+      "condition": "Every previously passing test name remains passing; totals alone are insufficient."
+    },
+    {
+      "area": "Existing fixture diagnostics and exit status",
+      "status": "MATCH_LOCAL",
+      "fixtures": 12,
+      "runs": 288,
+      "evidence": "measurements.json",
+      "condition": "Every stdout/stderr hash and exit status matches for the same fixture across all builds/runs. --noEmit means this does not check emitted code."
+    },
+    {
+      "area": "Formatting and lint",
+      "status": "PASS_LOCAL",
+      "commands": [
+        {
+          "name": "fmt",
+          "argv": [
+            "cargo",
+            "fmt",
+            "--all",
+            "--",
+            "--check"
+          ],
+          "exit": 0,
+          "seconds": 4.970411062240601
+        },
+        {
+          "name": "workspace",
+          "argv": [
+            "cargo",
+            "test",
+            "--release",
+            "--locked",
+            "--workspace",
+            "--no-fail-fast"
+          ],
+          "exit": 101,
+          "seconds": 365.8781089782715
+        },
+        {
+          "name": "clippy",
+          "argv": [
+            "cargo",
+            "clippy",
+            "--release",
+            "--locked",
+            "-p",
+            "ts_goport",
+            "-p",
+            "goport_util",
+            "-p",
+            "goport_lsproto",
+            "--all-targets",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "exit": 0,
+          "seconds": 37.6634886264801
+        }
+      ]
+    },
+    {
+      "area": "Lean model laws",
+      "status": "PASS_LOCAL_MODEL_ONLY",
+      "condition": "Proofs check selected optimization laws; Rust correspondence reviewed manually, not a whole-compiler equivalence proof."
+    },
+    {
+      "area": "Full protected tests against last accepted revision",
+      "status": "UNRUN",
+      "runner": "scripts/goport/goport-tests.sh",
+      "comparison": "scripts/goport/compare-tests.py",
+      "condition": "Zero lost/absent/unrun previously passing names; use the complete protected suite, not the 629-test local subset."
+    },
+    {
+      "area": "Diagnostics, emitted code, types/symbols and editor growth",
+      "status": "UNRUN",
+      "runner": "scripts/goport/gate.sh",
+      "comparison": "scripts/goport/gate-compare.py",
+      "condition": "No new mismatch or gate regression; enforce existing editor memory-growth limits."
+    },
+    {
+      "area": "Ordinary Query and Hono",
+      "status": "UNRUN_ON_CANDIDATE",
+      "runner": "scripts/goport/candidate.sh side",
+      "condition": "Unchanged real project inputs complete and match pinned Go; bound runs repeat with identical results. Prior R188 results do not qualify this patch."
+    },
+    {
+      "area": "Language server and compiler API",
+      "status": "UNRUN",
+      "runner": "scripts/goport/candidate.sh side",
+      "comparison": "scripts/goport/oracle-compare.py",
+      "condition": "All required existing batteries, per-request comparisons, no lost requests or new crashes/timeouts."
+    },
+    {
+      "area": "npm compatibility suite",
+      "status": "UNRUN",
+      "comparison": "scripts/goport/np-suite.sh diff",
+      "condition": "Every protected test retains its previous result; run separately from candidate.sh side."
+    },
+    {
+      "area": "Real-project performance",
+      "status": "UNRUN",
+      "runner": "scripts/goport/perf.sh",
+      "projects": [
+        "query",
+        "hono",
+        "zod",
+        "effect"
+      ],
+      "condition": "Interleave baseline and candidate on the same quiet supported host with identical build profiles; retain time and peak-RSS samples for every project."
+    }
+  ],
+  "acceptanceRule": "Full repository acceptance remains pending. Use the existing candidate workflow and independent source-bound verdicts; this evidence record does not change any gate or accepted baseline.",
+  "splitPrProtocol": [
+    "Build the unchanged PR parent and parent plus only that PR with identical toolchain/profile/flags. Record source and binary hashes.",
+    "Run the same unchanged fixtures and real projects in interleaved order on a quiet host. Save all samples, including adverse results, and compare CPU/time/peak RSS.",
+    "Run existing protected correctness checks by name/request/item, compare against the last accepted baseline, and preserve all known failures and unrun checks explicitly.",
+    "Bind performance and correctness evidence to the exact PR diff. Remeasure after changes that affect behavior or hot paths."
+  ],
+  "localEvidenceLimits": [
+    "One unchanged workspace failure comes from discovery of an ancestor package.json in the scratch environment; both baseline and candidate exit101. This is not an all-green workspace run.",
+    "No new tests or modified expectations were introduced.",
+    "The 629 local passes do not replace upstream protected suites.",
+    "No emitted-code, editor/API, np-suite or real-project qualification is inferred from --noEmit fixture matches."
+  ],
+  "artifacts": {
+    "measurements.json": "0042a997217154903d377d9b3a3c4f38ca66c79f8d4aed1110c5917d51120a7a",
+    "raw-evidence-sha256.json": "f26ff1567f6bcd7493f3dfe26d605e561e7ad967e13a5d6787bad819bc2dcd96",
+    "existing-test-comparison.json": "0e2a71e702dcf00d371484a1f23a5d74df069a8a48513eb22d1957c17530f432"
+  },
+  "originalEvidenceSha256": {
+    "storage-fixture-performance.json": "e35b8fd94d298a3af7696a91c0384b87ce707b86c2548c8c3fea0800f386752c",
+    "storage-result.json": "97b53fcba1bd39d0d3cb6048dd9bfd57ebf0857b9efcd2eb16dcb4d6938e62cd",
+    "storage-reviewer-final.json": "5ae507f0e3d37057ae39915f6cc6b51eda556e0da9f349afa5b5a79645607581",
+    "storage-auditor-final.json": "be3075ffddf0752ab9330bc4c84751da0b4f24ed43d7797aa3fe6ebdb286e67b"
+  }
+}

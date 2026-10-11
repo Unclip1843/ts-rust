@@ -1,0 +1,59 @@
+--- a/crates/ts_goport/src/checker/checker_p28.rs
++++ b/crates/ts_goport/src/checker/checker_p28.rs
+@@ -1304,8 +1304,7 @@
+             }
+             if named_types_count + reduced_types.len() == type_set.len() {
+                 for &t in &named_unions {
+-                    let (inserted, _) = self.insert_type(&reduced_types, t);
+-                    reduced_types = inserted;
++                    self.insert_type_into(&mut reduced_types, t);
+                 }
+                 origin = self.new_union_type(ObjectFlags::NONE, &reduced_types);
+             }
+@@ -1571,7 +1570,7 @@
+             for &t in types.iter() {
+                 if let Some((variable, primitive)) = self.constrained_type_variable_parts_p28(t) {
+                     if variable == type_variable {
+-                        (primitives, _) = self.insert_type(&primitives, primitive);
++                        self.insert_type_into(&mut primitives, primitive);
+                     }
+                 }
+             }
+--- a/crates/ts_goport/src/checker/checker_p29.rs
++++ b/crates/ts_goport/src/checker/checker_p29.rs
+@@ -523,8 +523,7 @@
+         for &u in &union_types {
+             for i in 0..self.ty(u).types().len() {
+                 let t = self.type_at(u, i);
+-                let (new_checked, inserted) = self.insert_type(&checked, t);
+-                checked = new_checked;
++                let inserted = self.insert_type_into(&mut checked, t);
+                 if inserted {
+                     if self.each_union_contains(&union_types, t) {
+                         // undefinedType/missingType are always sorted first so we leverage that here
+@@ -541,7 +540,7 @@
+                             result[0] = self.missing_type;
+                             continue;
+                         }
+-                        result = self.insert_type(&result, t).0;
++                        self.insert_type_into(&mut result, t);
+                     }
+                 }
+             }
+@@ -960,6 +959,16 @@
+             }
+             (_, true) => (types.to_vec(), false),
+         }
++    }
++
++    /// Go `insertType` for an already owned buffer. Preserve the search and
++    /// its comparison effects, but retain capacity and copy nothing on a hit.
++    pub(crate) fn insert_type_into(&self, types: &mut Vec<TypeId>, t: TypeId) -> bool {
++        let (index, found) = self.search_union_types(types, t);
++        if !found {
++            types.insert(index, t);
++        }
++        !found
+     }
+ 
+     // Go: checker/checker.go:27093 countTypes

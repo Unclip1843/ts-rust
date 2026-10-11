@@ -1,0 +1,444 @@
+{
+  "auditor": "/root/regression_auditor",
+  "verdict": "PASS-expanded-local-qualification-with-recorded-environment-failures-NOT-R188-ACCEPTANCE",
+  "sourceHashes": {
+    "crates/ts_goport/src/checker/checker_p24.rs": "39fcb798ccd774d10a4acfa9da429365a27636f50a07eeab6fb17a4a71b01472",
+    "crates/ts_goport/src/checker/checker_p28.rs": "87f7cd8551b007c1e5f19c141090b4c547c7d6a9eeb76694876ac8c2660007ed",
+    "crates/ts_goport/src/checker/checker_p29.rs": "22d2e1b86f57400c792598ef7885ed5bff8bb0d5f75b022eb13ab9bdb76a848e",
+    "crates/ts_goport/src/checker/utilities_p1.rs": "800f7ae2caca79bc47ca0cd320c1bef20d128c73fbf4a56ae8d15f204626d4ed",
+    "proofs/IntersectionPruning.lean": "347c02a52654dda4910c1ed64fce1d28267ecc5da5286f38530bd026568d50af",
+    "proofs/UniqueDeclarationStorage.lean": "bb032a8aa7ea38cf7bdddb71ecae26248dfbbcbc6b47cc85f36841edc6dda303",
+    "proofs/ScopedComparisonCache.lean": "fd656e5c6c0e2df2a903620886abfc4ac69bff36b239db8d45c9ec4a9bdfa4ef"
+  },
+  "currentSourceHashesVerified": true,
+  "testBinary": {
+    "path": "$REPO/target/release/deps/go_baselines-c3949fb16a979fe0",
+    "sha256": "45a792d758d4f47ae6f0f64f06571911bdc6fd6042826b89a6874f895c4244f1",
+    "argv": [
+      "cargo",
+      "test",
+      "--release",
+      "--locked",
+      "-p",
+      "ts_goport",
+      "--test",
+      "go_baselines",
+      "--no-run",
+      "--message-format=json-render-diagnostics"
+    ]
+  },
+  "frozenTestBinaryHashesVerified": true,
+  "default": {
+    "listedTests": 1533,
+    "recordedNames": 1532,
+    "counts": {
+      "ok": 1529,
+      "ignored": 1,
+      "failed": 2
+    },
+    "onlyFilteredName": "compiler_runner::test_local",
+    "failedNames": [
+      "project_lsp::lsp_server_apisession_test::api_callback_wait_serves_shutdown_and_exit_behind_other_messages",
+      "project_lsp::lsp_server_apisession_test::api_session_keeps_lsp_served"
+    ],
+    "originalFailuresPreserved": true,
+    "ignoredName": "compiler_runner::test_submodule"
+  },
+  "completedRunReceipts": {
+    "default": {
+      "record": {
+        "name": "default",
+        "argv": [
+          "$SCRATCH/factored-type-core/full-qualification/go_baselines",
+          "--exact",
+          "--skip",
+          "compiler_runner::test_local",
+          "--test-threads",
+          "1",
+          "--logfile",
+          "$SCRATCH/factored-type-core/full-qualification/default/libtest.results"
+        ],
+        "exit": 101,
+        "seconds": 117.66329908370972,
+        "testBinarySha256": "45a792d758d4f47ae6f0f64f06571911bdc6fd6042826b89a6874f895c4244f1",
+        "shard": null
+      },
+      "lastSummary": "test result: FAILED. 1529 passed; 2 failed; 1 ignored; 0 measured; 1 filtered out; finished in 117.63s"
+    },
+    "compiler-0": {
+      "record": {
+        "name": "compiler-0",
+        "argv": [
+          "$SCRATCH/factored-type-core/full-qualification/go_baselines",
+          "--exact",
+          "compiler_runner::test_local",
+          "--test-threads",
+          "1",
+          "--logfile",
+          "$SCRATCH/factored-type-core/full-qualification/compiler-0/libtest.results"
+        ],
+        "exit": 0,
+        "seconds": 221.5044150352478,
+        "testBinarySha256": "45a792d758d4f47ae6f0f64f06571911bdc6fd6042826b89a6874f895c4244f1",
+        "shard": "0/4"
+      },
+      "lastSummary": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1532 filtered out; finished in 221.47s"
+    },
+    "compiler-1": {
+      "record": {
+        "name": "compiler-1",
+        "argv": [
+          "$SCRATCH/factored-type-core/full-qualification/go_baselines",
+          "--exact",
+          "compiler_runner::test_local",
+          "--test-threads",
+          "1",
+          "--logfile",
+          "$SCRATCH/factored-type-core/full-qualification/compiler-1/libtest.results"
+        ],
+        "exit": 0,
+        "seconds": 233.04446291923523,
+        "testBinarySha256": "45a792d758d4f47ae6f0f64f06571911bdc6fd6042826b89a6874f895c4244f1",
+        "shard": "1/4"
+      },
+      "lastSummary": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1532 filtered out; finished in 233.03s"
+    }
+  },
+  "tsvCoverage": {
+    "default": {
+      "file": "$SCRATCH/factored-type-core/full-qualification/default/transpile-results.tsv",
+      "sha256": "a49d9321db016d9c62d8e4487bc25583313e8f43da871496307d7f11ecddbec6",
+      "rows": 82,
+      "statusKindCounts": {
+        "pass/js": 19,
+        "pass/dts": 22,
+        "baseline/reference-path": 41
+      },
+      "uniqueCasePaths": 28,
+      "failedRows": 0,
+      "duplicateExactRows": 0
+    },
+    "compiler-0": {
+      "file": "$SCRATCH/factored-type-core/full-qualification/compiler-0/compiler-results.tsv",
+      "sha256": "04018a54141b1f55702e08a1b354e0b72dea09984f1a7af8e935ee18b7fefdad",
+      "rows": 50193,
+      "statusKindCounts": {
+        "pass/compile": 3358,
+        "pass/error": 3358,
+        "pass/contentmapper": 3358,
+        "pass/output": 3344,
+        "pass/sourcemap": 3358,
+        "pass/sourcemaprecord": 3358,
+        "pass/types": 3191,
+        "pass/symbols": 3191,
+        "pass/unionordering": 3358,
+        "pass/parentpointers": 3358,
+        "baseline/reference-path": 16522,
+        "skip/config": 399,
+        "pass/moduleresolution": 38,
+        "skip/output": 2
+      },
+      "uniqueCasePaths": 3757,
+      "failedRows": 0,
+      "duplicateExactRows": 0
+    },
+    "compiler-1": {
+      "file": "$SCRATCH/factored-type-core/full-qualification/compiler-1/compiler-results.tsv",
+      "sha256": "a20ca1e7bea365f8719c8d2b2c40c8277e8eeaadec5a6366ee687debc19c4694",
+      "rows": 50266,
+      "statusKindCounts": {
+        "pass/compile": 3361,
+        "pass/error": 3361,
+        "pass/contentmapper": 3361,
+        "pass/output": 3340,
+        "pass/sourcemap": 3361,
+        "pass/sourcemaprecord": 3361,
+        "pass/types": 3191,
+        "pass/symbols": 3191,
+        "pass/unionordering": 3361,
+        "pass/parentpointers": 3361,
+        "baseline/reference-path": 16526,
+        "skip/config": 451,
+        "pass/moduleresolution": 37,
+        "skip/output": 3
+      },
+      "uniqueCasePaths": 3812,
+      "failedRows": 0,
+      "duplicateExactRows": 0
+    }
+  },
+  "socketReruns": {
+    "result": {
+      "reason": "macOS sockaddr_un path length; address spelling only changed, actual scratch location retained",
+      "cwd": "$REPO/crates/ts_goport",
+      "TMPDIR": "../../../../_runtime/_scratch/2026-10-10-codex-01a1265c/qtmp",
+      "resolvedTmpdir": "$SCRATCH/qtmp",
+      "testBinarySha256": "45a792d758d4f47ae6f0f64f06571911bdc6fd6042826b89a6874f895c4244f1",
+      "originalRuns": "../default/run.log",
+      "runs": [
+        {
+          "name": "project_lsp::lsp_server_apisession_test::api_callback_wait_serves_shutdown_and_exit_behind_other_messages",
+          "argv": [
+            "$SCRATCH/factored-type-core/full-qualification/go_baselines",
+            "--exact",
+            "project_lsp::lsp_server_apisession_test::api_callback_wait_serves_shutdown_and_exit_behind_other_messages",
+            "--test-threads",
+            "1"
+          ],
+          "exit": 0
+        },
+        {
+          "name": "project_lsp::lsp_server_apisession_test::api_session_keeps_lsp_served",
+          "argv": [
+            "$SCRATCH/factored-type-core/full-qualification/go_baselines",
+            "--exact",
+            "project_lsp::lsp_server_apisession_test::api_session_keeps_lsp_served",
+            "--test-threads",
+            "1"
+          ],
+          "exit": 0
+        }
+      ]
+    },
+    "reviewerVerdict": "PASS_ENVIRONMENT_REPAIR_ONLY",
+    "bothNamedRawLogsPass": true,
+    "scope": "Two original socket failures only; failed receipts retained."
+  },
+  "projects": {
+    "hono": {
+      "source": {
+        "name": "hono",
+        "source": "$SCRATCH/factored-type-core/full-qualification/projects/hono/hono-06880c4a2b04de9dd74217f26dd831209b9c01f1",
+        "commit": "06880c4a2b04de9dd74217f26dd831209b9c01f1",
+        "url": "https://codeload.github.com/honojs/hono/tar.gz/06880c4a2b04de9dd74217f26dd831209b9c01f1",
+        "archiveSha256": "a78fc70c65ba18197d36d5203e540cad14ffd0b75a3adcda7b0a6427e0a491ba",
+        "lockSha256": "910eec46012b95777558e1a8b568e63cf48c7167d12e7deaa60382d474fcdfff"
+      },
+      "archiveLockOriginalSourceHashesVerified": true,
+      "originalSourceFileCount": 486,
+      "runs": 4,
+      "allOutputsAndExitsIdentical": true,
+      "exit": 2,
+      "diagnosticCount": 2,
+      "diagnostics": [
+        "src/helper/css/index.ts(192,31): error TS7031: Binding element 'children' implicitly has an 'any' type.",
+        "src/helper/css/index.ts(192,41): error TS7031: Binding element 'nonce' implicitly has an 'any' type."
+      ],
+      "sourceUnchanged": true,
+      "freshPinnedGoExitAndRawOutputsIdentical": true
+    },
+    "query": {
+      "source": {
+        "name": "query",
+        "source": "$SCRATCH/factored-type-core/full-qualification/projects/query/query-44645e9eb1dafba5f2f229adb328582075484f36",
+        "commit": "44645e9eb1dafba5f2f229adb328582075484f36",
+        "url": "https://codeload.github.com/TanStack/query/tar.gz/44645e9eb1dafba5f2f229adb328582075484f36",
+        "archiveSha256": "8334776c556ad5ebe0ee92468e6539c2f95a4987a55640a50e760a44284db7d9",
+        "lockSha256": "dabc851b54103afd7fb67d00d07663d554c89393c2ffde5254ca539f84d81e71"
+      },
+      "archiveLockOriginalSourceHashesVerified": true,
+      "originalSourceFileCount": 2335,
+      "runs": 4,
+      "allOutputsAndExitsIdentical": true,
+      "exit": 0,
+      "diagnosticCount": 0,
+      "diagnostics": [],
+      "sourceUnchanged": true,
+      "freshPinnedGoExitAndRawOutputsIdentical": true
+    }
+  },
+  "npmSuiteAudit": "$SCRATCH/factored-type-core/full-qualification/np-auditor.json",
+  "pending": [],
+  "interpretation": "All four existing local compiler shards complete with 13,468 unique compiled configurations and no failed TSV rows; explicit skips are retained. Default suite has 1,531 observed passing names after two narrowly approved same-binary environment reruns; original failures remain. Transpile and npm checks pass. Query is clean; Hono retains two diagnostics exactly matching original and freshly built pinned Go. This is expanded local qualification, not official accepted R188 protected-set retention.",
+  "limitations": [
+    "Canonical Linux protected wrappers were not executed; direct existing unchanged test target evidence is local macOS qualification.",
+    "No official acceptance follows from successful local checks or fresh Go project parity.",
+    "Auditor executed no tests, builds, compiler runs or source edits."
+  ],
+  "compilerShards": {
+    "compiler-0": {
+      "exit": 0,
+      "shard": "0/4",
+      "rows": 50193,
+      "sha256": "04018a54141b1f55702e08a1b354e0b72dea09984f1a7af8e935ee18b7fefdad",
+      "counts": {
+        "pass/compile": 3358,
+        "pass/error": 3358,
+        "pass/contentmapper": 3358,
+        "pass/output": 3344,
+        "pass/sourcemap": 3358,
+        "pass/sourcemaprecord": 3358,
+        "pass/types": 3191,
+        "pass/symbols": 3191,
+        "pass/unionordering": 3358,
+        "pass/parentpointers": 3358,
+        "baseline/reference-path": 16522,
+        "skip/config": 399,
+        "pass/moduleresolution": 38,
+        "skip/output": 2
+      },
+      "lastSummary": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1532 filtered out; finished in 221.47s"
+    },
+    "compiler-1": {
+      "exit": 0,
+      "shard": "1/4",
+      "rows": 50266,
+      "sha256": "a20ca1e7bea365f8719c8d2b2c40c8277e8eeaadec5a6366ee687debc19c4694",
+      "counts": {
+        "pass/compile": 3361,
+        "pass/error": 3361,
+        "pass/contentmapper": 3361,
+        "pass/output": 3340,
+        "pass/sourcemap": 3361,
+        "pass/sourcemaprecord": 3361,
+        "pass/types": 3191,
+        "pass/symbols": 3191,
+        "pass/unionordering": 3361,
+        "pass/parentpointers": 3361,
+        "baseline/reference-path": 16526,
+        "skip/config": 451,
+        "pass/moduleresolution": 37,
+        "skip/output": 3
+      },
+      "lastSummary": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1532 filtered out; finished in 233.03s"
+    },
+    "compiler-2": {
+      "exit": 0,
+      "shard": "2/4",
+      "rows": 50604,
+      "sha256": "47b17e6e9bd1ae80922e04f4cc806b3e1648e0d5a7e3b226fe072602f31d5751",
+      "counts": {
+        "pass/compile": 3387,
+        "pass/error": 3387,
+        "pass/contentmapper": 3387,
+        "pass/output": 3369,
+        "pass/sourcemap": 3387,
+        "pass/sourcemaprecord": 3387,
+        "pass/types": 3206,
+        "pass/symbols": 3206,
+        "pass/unionordering": 3387,
+        "pass/parentpointers": 3387,
+        "baseline/reference-path": 16634,
+        "skip/config": 442,
+        "pass/moduleresolution": 37,
+        "skip/output": 1
+      },
+      "lastSummary": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1532 filtered out; finished in 189.50s"
+    },
+    "compiler-3": {
+      "exit": 0,
+      "shard": "3/4",
+      "rows": 50271,
+      "sha256": "f01c8de766e52c496e31bf98e88eebea52b4daad65e002bfb2c0b51a8c3f6c38",
+      "counts": {
+        "pass/compile": 3362,
+        "pass/error": 3362,
+        "pass/contentmapper": 3362,
+        "pass/output": 3345,
+        "pass/sourcemap": 3362,
+        "pass/sourcemaprecord": 3362,
+        "pass/types": 3193,
+        "pass/symbols": 3193,
+        "pass/unionordering": 3362,
+        "pass/parentpointers": 3362,
+        "baseline/reference-path": 16534,
+        "skip/config": 428,
+        "pass/moduleresolution": 42,
+        "skip/output": 2
+      },
+      "lastSummary": "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1532 filtered out; finished in 205.07s"
+    }
+  },
+  "allFourCompilerShardsClosedNormally": true,
+  "compilerTotals": {
+    "tsvRows": 201334,
+    "statusKindCounts": {
+      "pass/compile": 13468,
+      "pass/error": 13468,
+      "pass/contentmapper": 13468,
+      "pass/output": 13398,
+      "pass/sourcemap": 13468,
+      "pass/sourcemaprecord": 13468,
+      "pass/types": 12781,
+      "pass/symbols": 12781,
+      "pass/unionordering": 13468,
+      "pass/parentpointers": 13468,
+      "baseline/reference-path": 66216,
+      "skip/config": 1720,
+      "pass/moduleresolution": 154,
+      "skip/output": 8
+    },
+    "actualCompiledConfigurationKeys": 13468,
+    "duplicateSemanticKindCaseKeys": 0,
+    "baselineReferenceRows": 66216,
+    "uniqueBaselineReferencePaths": 66200,
+    "duplicateBaselineReferenceRows": 16,
+    "failedRows": 0,
+    "skipsCountedAsPasses": false
+  },
+  "defaultQualification": {
+    "listedNames": 1533,
+    "initialPasses": 1529,
+    "initialFailures": 2,
+    "reviewerApprovedSameBinaryRerunPasses": 2,
+    "observedPassingNamesIncludingReruns": 1531,
+    "ignoredSubmoduleName": "compiler_runner::test_submodule",
+    "localNameCoveredByFourShards": "compiler_runner::test_local",
+    "failedReceiptsPreserved": true
+  },
+  "transpilePassingChecks": 41,
+  "npmPassingTestsPerBinary": 879,
+  "freshGoProjectOracle": {
+    "oracleSha256": "87c7767e0369afd43cf5a14bf5b26294dc6815122ded00ae8b8925ff2f57697b",
+    "sourcePin": "673a5f17d713bdc8c7185f18a9c11e3c4ac5d781",
+    "runs": [
+      {
+        "name": "hono",
+        "argv": [
+          "$SCRATCH/factored-type-core/full-qualification/oracle-tsc",
+          "--noEmit",
+          "--pretty",
+          "false",
+          "--tsBuildInfoFile",
+          "$SCRATCH/factored-type-core/full-qualification/projects/hono-oracle/oracle.tsbuildinfo",
+          "-p",
+          "$SCRATCH/factored-type-core/full-qualification/projects/hono/hono-06880c4a2b04de9dd74217f26dd831209b9c01f1/tsconfig.build.json"
+        ],
+        "exit": 2,
+        "stdoutSha256": "5839aa61cfc707082963101a92aa4263902367046ddaff64d5bd67a938537735",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 205,
+        "stderrBytes": 0
+      },
+      {
+        "name": "query",
+        "argv": [
+          "$SCRATCH/factored-type-core/full-qualification/oracle-tsc",
+          "--noEmit",
+          "--pretty",
+          "false",
+          "-p",
+          "$SCRATCH/factored-type-core/full-qualification/projects/query/query-44645e9eb1dafba5f2f229adb328582075484f36/packages/query-core/tsconfig.prod.json"
+        ],
+        "exit": 0,
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 0,
+        "stderrBytes": 0
+      }
+    ]
+  },
+  "knownWorkspaceFailure": {
+    "audit": "$SCRATCH/factored-type-core/round3/storage-auditor-final.json",
+    "name": "multi_program::build_watch_keeps_the_first_dts_parse_of_a_cycle",
+    "condition": "Inherited ancestor packageJsons entry under scratch TMPDIR; original and candidate payloads identical; remains recorded and not cleared by socket reruns."
+  },
+  "unqualifiedOfficialEvidence": [
+    "Accepted R188 per-name results and saved baseline binaries",
+    "R188 full gate manifest and exact tool/cache identities",
+    "Six LSP golden batteries and thirteen API golden batteries, with protected answer sets",
+    "Canonical types/symbols, emit/build/corpus/editor gate stages",
+    "Historical bound project input environment and repeat manifests",
+    "Accepted np-r188 per-name result comparison"
+  ]
+}

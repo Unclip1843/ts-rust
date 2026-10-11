@@ -1,0 +1,82 @@
+{
+  "reviewer": "independent compiler reviewer",
+  "reviewedUtc": "2026-10-11T08:41:29.037358+00:00",
+  "verdict": "PASS_EXACT_PATCH_STATIC_REVIEW_FOR_DRAFT_SUBMISSION_ONLY",
+  "repository": "pingdotgg/ts-rust",
+  "baseCommit": "bf34f21ae40b221ea9def389778d2f90ec950398",
+  "baseCheck": "All four affected source files are byte-identical to previously reviewed upstream 9fb896fa84df8b14bea4fa505b250acf3f81cf84.",
+  "patches": [
+    {
+      "patch": "../upstream-review-2026-10-11/1-owned-insertion.patch",
+      "sha256": "e52ad6a99bf28fbddff5fe872694182ec7c59f1fb614ab32a930c6312cee3544",
+      "proposal": "Owned insertion",
+      "staticVerdict": "PASS_FOR_DRAFT_SUBMISSION",
+      "behavioralReason": "All four buffers are local owned Vecs. One unchanged search determines insertion index/found; mutate only when absent and return the same inserted flag. Existing public allocating insert_type remains unchanged.",
+      "limits": "Vec::insert still shifts elements and can grow. Removed copies are structural evidence, not measured standalone speedup."
+    },
+    {
+      "patch": "../upstream-review-2026-10-11/2-declaration-storage.patch",
+      "sha256": "4cdf43ba482365a424eb0460be4d109bebc25dcb2fcf9343250e344fb5e00988",
+      "proposal": "Unique declaration storage",
+      "staticVerdict": "PASS_FOR_DRAFT_SUBMISSION",
+      "behavioralReason": "Remove occurrence-count reservation and let retained list and existing DeclarationSet grow from observed unique nodes. Membership, declaration iteration, and first-seen order remain unchanged; len_hint zero changes capacity only.",
+      "limits": "Temporary DeclarationSet may grow on a duplicate at its load threshold. Retained list growth can add reallocations for mostly unique input."
+    },
+    {
+      "patch": "../upstream-review-2026-10-11/3-shared-slice.patch",
+      "sha256": "4f5f85f5002f6e9804e57cd057f7e0c7ccc634ede9a39c8a4cfd06f8ace6e170",
+      "proposal": "Identical slice shortcut",
+      "staticVerdict": "PASS_FOR_DRAFT_SUBMISSION",
+      "behavioralReason": "After equal-length check, identical immutable slice data pointers imply identical TypeId at every position. compare_types(t,t) returns zero before reads or lazy symbol IDs; bypassing the scan preserves result and semantic state.",
+      "limits": "Same-pointer proof requires valid Rust immutable slices; equal empty slices remain zero regardless backing pointer or nil sentinel. Allocator/whole checker correctness not formally proved."
+    }
+  ],
+  "excludedChanges": [
+    "intersection pruning",
+    "directional or bidirectional comparison caches",
+    "ScopedTypeComparer body migration",
+    "packed sort keys"
+  ],
+  "proofReview": {
+    "uniqueStorage": {
+      "source": "evidence/proofs/UniqueDeclarationStorage.lean",
+      "scope": "Abstract ordered unique retained-buffer model with initial capacity4 and doubling growth; proves semantic list equality and unique-count capacity bound. Does not prove concrete SmallVec allocation policy or temporary DeclarationSet allocation behavior.",
+      "duplicateAllocationClaim": "Only modeled retained buffer; not temporary hash table or whole operation.",
+      "sha256": "bb032a8aa7ea38cf7bdddb71ecae26248dfbbcbc6b47cc85f36841edc6dda303"
+    },
+    "sharedSlice": {
+      "source": "evidence/proofs/SharedSliceIdentity.lean",
+      "scope": "Identity comparison trace returns equality without semantic state effects, assuming run(q,q,s)=(eq,s). Rust identity branch and same-pointer/equal-length correspondence manually reviewed.",
+      "extraction": "PASS: exact standalone file reviewed; contains only import Std, directTrace and self_comparisons_inert plus axiom print. No cache definitions or assumptions.",
+      "sha256": "87b3bcfa87129d7d4c66f23ff5e89aab7cc5568d972fb2a95177753d524db8e9"
+    },
+    "ownedInsertion": "Rust source manually reviewed: identical binary search and ordered insert; no standalone extracted insertion theorem supplied at this checkpoint.",
+    "formalLimit": "No extracted Rust proof or whole-compiler/TypeScript semantic proof. Existing kernel logs prove abstract laws only."
+  },
+  "validationDisclosure": {
+    "historical": "Combined retained round3 source previously ran workspace629 retained passes with1 unchanged environmental watch failure, expanded go_baselines1531 passing default names incl2environment reruns,133390 compiler/conformance subtest passes, npm879 tests each side, local Query zero diagnostics and Hono2 diagnostics matching pinned Go.",
+    "individualCurrentHead": "No per-patch build, test, lint, benchmark or acceptance run on bf34f21 performed by this reviewer; combined historical evidence does not establish individual current-head acceptance.",
+    "performance": "No standalone gain or upstream house-bar achievement claimed; cache5 measured aggregate advantage must not be attributed to these patches."
+  },
+  "submission": {
+    "draftSemanticBlockers": [],
+    "requiredDisclosure": "Submit as drafts with exact patches/proof scope/historical evidence and pending perpatch current-head validation prominent. Upstream CI and maintainer review determine readiness.",
+    "publishedContributionFiles": "No CONTRIBUTING or pull-request template found in current tracked tree; repository AGENTS/accountability and house bar still apply to actual acceptance.",
+    "pendingOverlap": "p24 future nevfast1/targs1 changes nearby require rebase review; these changes do not currently replace accumulator fix."
+  },
+  "acceptance": "Not merge approval, protected-suite acceptance, or accepted-state transition.",
+  "reviewerActions": "Read-only source, Git object and historical proof/log review plus this requested scratch report; no source edits/builds/tests.",
+  "proofExtractionVerdict": {
+    "verdict": "PASS_EXACT_SEPARATED_PROOF_AND_DISCLOSURE_REVIEW",
+    "toolchain": "Lean (version 4.33.1, arm64-apple-darwin24.6.0, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)",
+    "verification": "evidence/proofs/verification.json",
+    "verificationSha256": "6e51db5c78adc7685604b8b91c0187834b342c1e3f25806e098ac5f2db36606c",
+    "recordedChecksAllExitZero": true,
+    "reviewerRanLean": false,
+    "axioms": "Shared slice: propext only. Unique retained buffer: standard propext, Quot.sound and Classical.choice; no sorry/custom/project axiom.",
+    "README": "evidence/README.md",
+    "readmeSha256": "cffaa1b1c39b14b4e06dc7800ed4fed8d7f0bde7b1902f761dacb581f9d2b24a",
+    "readmeReview": "PASS: independent-head validation missing explicit, historical cache/pruning inclusion explicit, no standalone speedup or whole-compiler proof claims, retained original failures/skips and official qualification gaps disclosed.",
+    "forkOnlyEvidencePublication": "No semantic blocker to publishing this reviewed supporting evidence on fork-only branch for three code-only draft PRs. Not merge acceptance."
+  }
+}

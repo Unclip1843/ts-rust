@@ -1,0 +1,733 @@
+diff --git a/crates/ts_goport/src/checker/checker_p24.rs b/crates/ts_goport/src/checker/checker_p24.rs
+index 03fa9bd8..e6b4cd82 100644
+--- a/crates/ts_goport/src/checker/checker_p24.rs
++++ b/crates/ts_goport/src/checker/checker_p24.rs
+@@ -492,14 +492,13 @@ impl Checker {
+         if prop_set.is_empty() {
+             prop_set.push(single_prop);
+         }
+-        let declaration_count = prop_set
+-            .iter()
+-            .map(|&prop| self.sym(prop).declarations.len())
+-            .sum();
+         // PERF: the declarations are collected on the stack. A list of 0 or 1
+         // declarations is stored with no heap list (no malloc). A longer list
+         // moves into one `Vec` for `Declarations::from`, as before.
+-        let mut declarations: SmallVec<[Node; 4]> = SmallVec::with_capacity(declaration_count);
++        // Size by unique declarations, not their repeated occurrences across
++        // constituents. The resulting symbol retains this buffer, so reserving
++        // the occurrence count can retain a Cartesian product's worth of slack.
++        let mut declarations: SmallVec<[Node; 4]> = SmallVec::new();
+         // PERF: Go `core.AppendIfUnique` scans the list for each declaration,
+         // which is quadratic in a long list (blueprint: 43k calls with 181
+         // declarations, 178 of them distinct; the scans were about half of
+@@ -525,7 +524,7 @@ impl Checker {
+             }
+             for &declaration in self.sym(prop).declarations.iter() {
+                 // Go: core.AppendIfUnique
+-                declaration_set.add(&mut declarations, declaration, declaration_count);
++                declaration_set.add(&mut declarations, declaration, 0);
+             }
+             let t = self.get_type_of_symbol(prop);
+             if first_type.is_nil() {
+diff --git a/crates/ts_goport/src/checker/checker_p28.rs b/crates/ts_goport/src/checker/checker_p28.rs
+index 4e4fe29b..d31fbe7d 100644
+--- a/crates/ts_goport/src/checker/checker_p28.rs
++++ b/crates/ts_goport/src/checker/checker_p28.rs
+@@ -1277,6 +1277,8 @@ impl Checker {
+             // The keyed searches make Go's comparisons (`search_keyed_types`).
+             // Before, these searches made most of the union comparisons.
+             let mut named_keys: Vec<Vec<(u128, TypeId)>> = vec![Vec::new(); named_unions.len()];
++            let comparer =
++                crate::checker::utilities_p1::ScopedTypeComparer::memoized(self, type_set.len());
+             for &t in &type_set {
+                 let key = self.union_sort_key(t);
+                 let mut in_named = false;
+@@ -1284,7 +1286,7 @@ impl Checker {
+                     if named_keys[i].is_empty() {
+                         named_keys[i] = self.union_sort_keys(self.ty(u).types());
+                     }
+-                    if self.search_keyed_types(&named_keys[i], key, t).1 {
++                    if comparer.search_keyed_types(&named_keys[i], key, t).1 {
+                         in_named = true;
+                         break;
+                     }
+@@ -1304,8 +1306,7 @@ impl Checker {
+             }
+             if named_types_count + reduced_types.len() == type_set.len() {
+                 for &t in &named_unions {
+-                    let (inserted, _) = self.insert_type(&reduced_types, t);
+-                    reduced_types = inserted;
++                    self.insert_type_into(&mut reduced_types, t);
+                 }
+                 origin = self.new_union_type(ObjectFlags::NONE, &reduced_types);
+             }
+@@ -1571,7 +1572,7 @@ impl Checker {
+             for &t in types.iter() {
+                 if let Some((variable, primitive)) = self.constrained_type_variable_parts_p28(t) {
+                     if variable == type_variable {
+-                        (primitives, _) = self.insert_type(&primitives, primitive);
++                        self.insert_type_into(&mut primitives, primitive);
+                     }
+                 }
+             }
+diff --git a/crates/ts_goport/src/checker/checker_p29.rs b/crates/ts_goport/src/checker/checker_p29.rs
+index 1e9483ad..8efc9315 100644
+--- a/crates/ts_goport/src/checker/checker_p29.rs
++++ b/crates/ts_goport/src/checker/checker_p29.rs
+@@ -1,4 +1,35 @@
+ use crate::prelude::*;
++use smallvec::SmallVec;
++
++// Shared with the cross-product traversal: contradiction is monotone as
++// domain bits accumulate. See proofs/IntersectionPruning.lean.
++fn intersection_domains_disjoint(strict_null_checks: bool, includes: TypeFlags) -> bool {
++    let dd = TypeFlags::DISJOINT_DOMAINS;
++    strict_null_checks
++        && includes.intersects(TypeFlags::NULLABLE)
++        && includes.intersects(
++            TypeFlags::OBJECT | TypeFlags::NON_PRIMITIVE | TypeFlags::INCLUDES_EMPTY_OBJECT,
++        )
++        || includes.intersects(TypeFlags::NON_PRIMITIVE)
++            && includes.intersects(dd.without(TypeFlags::NON_PRIMITIVE))
++        || includes.intersects(TypeFlags::STRING_LIKE)
++            && includes.intersects(dd.without(TypeFlags::STRING_LIKE))
++        || includes.intersects(TypeFlags::NUMBER_LIKE)
++            && includes.intersects(dd.without(TypeFlags::NUMBER_LIKE))
++        || includes.intersects(TypeFlags::BIG_INT_LIKE)
++            && includes.intersects(dd.without(TypeFlags::BIG_INT_LIKE))
++        || includes.intersects(TypeFlags::ES_SYMBOL_LIKE)
++            && includes.intersects(dd.without(TypeFlags::ES_SYMBOL_LIKE))
++        || includes.intersects(TypeFlags::VOID_LIKE)
++            && includes.intersects(dd.without(TypeFlags::VOID_LIKE))
++}
++
++struct IntersectionAxis {
++    index: usize,
++    offset: usize,
++    length: usize,
++    next: usize,
++}
+ 
+ impl Checker {
+     // Go: checker/checker.go:26489 intersectTypes
+@@ -57,25 +88,7 @@ impl Checker {
+             }
+             return self.never_type;
+         }
+-        let dd = TypeFlags::DISJOINT_DOMAINS;
+-        if self.strict_null_checks
+-            && includes.intersects(TypeFlags::NULLABLE)
+-            && includes.intersects(
+-                TypeFlags::OBJECT | TypeFlags::NON_PRIMITIVE | TypeFlags::INCLUDES_EMPTY_OBJECT,
+-            )
+-            || includes.intersects(TypeFlags::NON_PRIMITIVE)
+-                && includes.intersects(dd.without(TypeFlags::NON_PRIMITIVE))
+-            || includes.intersects(TypeFlags::STRING_LIKE)
+-                && includes.intersects(dd.without(TypeFlags::STRING_LIKE))
+-            || includes.intersects(TypeFlags::NUMBER_LIKE)
+-                && includes.intersects(dd.without(TypeFlags::NUMBER_LIKE))
+-            || includes.intersects(TypeFlags::BIG_INT_LIKE)
+-                && includes.intersects(dd.without(TypeFlags::BIG_INT_LIKE))
+-            || includes.intersects(TypeFlags::ES_SYMBOL_LIKE)
+-                && includes.intersects(dd.without(TypeFlags::ES_SYMBOL_LIKE))
+-            || includes.intersects(TypeFlags::VOID_LIKE)
+-                && includes.intersects(dd.without(TypeFlags::VOID_LIKE))
+-        {
++        if intersection_domains_disjoint(self.strict_null_checks, includes) {
+             return self.never_type;
+         }
+         if includes.intersects(TypeFlags::TEMPLATE_LITERAL | TypeFlags::STRING_MAPPING)
+@@ -523,8 +536,7 @@ impl Checker {
+         for &u in &union_types {
+             for i in 0..self.ty(u).types().len() {
+                 let t = self.type_at(u, i);
+-                let (new_checked, inserted) = self.insert_type(&checked, t);
+-                checked = new_checked;
++                let inserted = self.insert_type_into(&mut checked, t);
+                 if inserted {
+                     if self.each_union_contains(&union_types, t) {
+                         // undefinedType/missingType are always sorted first so we leverage that here
+@@ -541,7 +553,7 @@ impl Checker {
+                             result[0] = self.missing_type;
+                             continue;
+                         }
+-                        result = self.insert_type(&result, t).0;
++                        self.insert_type_into(&mut result, t);
+                     }
+                 }
+             }
+@@ -595,32 +607,168 @@ impl Checker {
+         primitive.is_some() && self.contains_type(types, primitive)
+     }
+ 
++    // A read-only summary of normalization up to the early domain rejection.
++    // None means a skipped leaf could suppress observable normalization work.
++    // OBJECT represents both ordinary and empty anonymous objects here: the
++    // domain predicate treats OBJECT and INCLUDES_EMPTY_OBJECT identically.
++    // This remains true if a surviving leaf resolves an initially unresolved object.
++    fn intersection_domain_summary(&self, mut t: TypeId) -> Option<TypeFlags> {
++        if self.ty(t).flags.intersects(TypeFlags::FRESHABLE) {
++            t = self.ty(t).as_literal_type().regular_type;
++        }
++        let ty = self.ty(t);
++        if ty.flags.intersects(TypeFlags::UNION) {
++            // Regularizing a nested union can allocate a type and publish a cache.
++            return None;
++        }
++        if ty.flags.intersects(TypeFlags::INTERSECTION) {
++            let mut includes = TypeFlags::NONE;
++            for &child in ty.types() {
++                includes |= self.intersection_domain_summary(child)?;
++            }
++            return Some(includes);
++        }
++        if ty.object_flags.intersects(ObjectFlags::ANONYMOUS) {
++            if ty.flags != TypeFlags::OBJECT {
++                return None;
++            }
++            let symbol = ty.symbol;
++            if symbol.is_some()
++                && self.sym(symbol).flags.intersects(SymbolFlags::TYPE_LITERAL)
++                && !(ty.object_flags.intersects(ObjectFlags::MEMBERS_RESOLVED)
++                    && self.is_empty_resolved_type(t))
++                && !self
++                    .members_and_exports_links
++                    .try_get(symbol)
++                    .is_some_and(|links| {
++                        links[MembersOrExportsResolutionKind::RESOLVED_MEMBERS.0 as usize].is_some()
++                    })
++            {
++                // get_members_of_symbol would initialize late-bound members.
++                return None;
++            }
++            return Some(TypeFlags::OBJECT);
++        }
++        // Omit the synthetic NON_PRIMITIVE bit for distinct unit types. That
++        // sacrifices some pruning without needing a second TypeSet per prefix.
++        Some(ty.flags & TypeFlags::INCLUDES_MASK)
++    }
++
+     // Go: checker/checker.go:26895 getCrossProductIntersections
+     pub fn get_cross_product_intersections(
+         &mut self,
+         types: &[TypeId],
+         flags: IntersectionFlags,
+     ) -> Vec<TypeId> {
+-        let count = self.get_cross_product_union_size(types);
+-        let mut intersections: Vec<TypeId> = Vec::new();
+-        for i in 0..count {
+-            let mut constituents = types.to_vec();
+-            let mut n = i;
+-            let mut j = types.len() as i32 - 1;
+-            while j >= 0 {
+-                let ju = j as usize;
+-                if self.ty(types[ju]).flags.intersects(TypeFlags::UNION) {
+-                    let source_types = self.ty(types[ju]).types();
+-                    let length = source_types.len() as i32;
+-                    constituents[ju] = source_types[(n % length) as usize];
+-                    n /= length;
++        // The caller checks the original product's complexity BEFORE pruning.
++        if self.get_cross_product_union_size(types) == 0 {
++            return Vec::new();
++        }
++        // One union has no combinatorial suffix to prune. Stream it directly
++        // without allocating or retaining one domain summary per alternative.
++        let single_union = {
++            let mut unions = types
++                .iter()
++                .enumerate()
++                .filter(|&(_, &t)| self.ty(t).flags.intersects(TypeFlags::UNION));
++            let first = unions.next().map(|(index, _)| index);
++            if unions.next().is_none() { first } else { None }
++        };
++        if let Some(index) = single_union {
++            let union = types[index];
++            let mut constituents: SmallVec<[TypeId; 4]> = SmallVec::from_slice(types);
++            let mut intersections = Vec::new();
++            for choice in 0..self.ty(union).types().len() {
++                constituents[index] = self.type_at(union, choice);
++                let t = self.get_intersection_type_ex(&constituents, flags, None /*alias*/);
++                if !self.ty(t).flags.intersects(TypeFlags::NEVER) {
++                    intersections.push(t);
++                }
++            }
++            return intersections;
++        }
++        let mut axes: SmallVec<[IntersectionAxis; 2]> = SmallVec::new();
++        let mut domains: SmallVec<[TypeFlags; 8]> = SmallVec::new();
++        let mut guaranteed = TypeFlags::NONE;
++        let mut possible = TypeFlags::NONE;
++        let mut pure = true;
++        for (index, &t) in types.iter().enumerate() {
++            if self.ty(t).flags.intersects(TypeFlags::UNION) {
++                let choices = self.ty(t).types();
++                axes.push(IntersectionAxis {
++                    index,
++                    offset: domains.len(),
++                    length: choices.len(),
++                    next: 0,
++                });
++                let mut common = TypeFlags::INCLUDES_MASK;
++                for &choice in choices {
++                    let summary = self.intersection_domain_summary(choice).unwrap_or_else(|| {
++                        pure = false;
++                        TypeFlags::NONE
++                    });
++                    domains.push(summary);
++                    common &= summary;
++                    possible |= summary;
++                }
++                // Include facts shared by every choice even before this axis
++                // is selected, without changing the order of surviving leaves.
++                guaranteed |= common;
++            } else {
++                let summary = self.intersection_domain_summary(t).unwrap_or_else(|| {
++                    pure = false;
++                    TypeFlags::NONE
++                });
++                guaranteed |= summary;
++                possible |= summary;
++            }
++        }
++        let prune = pure && intersection_domains_disjoint(self.strict_null_checks, possible);
++        if prune && intersection_domains_disjoint(self.strict_null_checks, guaranteed) {
++            return Vec::new();
++        }
++
++        let mut intersections = Vec::new();
++        let mut constituents: SmallVec<[TypeId; 4]> = SmallVec::from_slice(types);
++        // Iterative traversal: no stack frame per operand, no per-leaf clone,
++        // no division/modulo, and no scanning of fixed operands per leaf.
++        // The rightmost union still varies fastest. Do not deduplicate results:
++        // their multiplicity contributes to the union's origin bookkeeping.
++        let mut prefix: SmallVec<[TypeFlags; 3]> = if prune {
++            smallvec::smallvec![guaranteed; axes.len() + 1]
++        } else {
++            SmallVec::new()
++        };
++        let mut depth = 0;
++        loop {
++            if depth == axes.len() {
++                let t = self.get_intersection_type_ex(&constituents, flags, None /*alias*/);
++                if !self.ty(t).flags.intersects(TypeFlags::NEVER) {
++                    intersections.push(t);
++                }
++            } else {
++                let axis = &mut axes[depth];
++                if axis.next < axis.length {
++                    let choice = axis.next;
++                    axis.next += 1;
++                    if prune {
++                        let includes = prefix[depth] | domains[axis.offset + choice];
++                        if intersection_domains_disjoint(self.strict_null_checks, includes) {
++                            // Every suffix combination has this contradiction.
++                            continue;
++                        }
++                        prefix[depth + 1] = includes;
++                    }
++                    constituents[axis.index] = self.type_at(types[axis.index], choice);
++                    depth += 1;
++                    continue;
+                 }
+-                j -= 1;
++                axis.next = 0;
+             }
+-            let t = self.get_intersection_type_ex(&constituents, flags, None /*alias*/);
+-            if !self.ty(t).flags.intersects(TypeFlags::NEVER) {
+-                intersections.push(t);
++            if depth == 0 {
++                break;
+             }
++            depth -= 1;
+         }
+         intersections
+     }
+@@ -962,6 +1110,16 @@ impl Checker {
+         }
+     }
+ 
++    /// Go `insertType` for an already owned buffer. Preserve the search and
++    /// its comparison effects, but retain capacity and copy nothing on a hit.
++    pub(crate) fn insert_type_into(&self, types: &mut Vec<TypeId>, t: TypeId) -> bool {
++        let (index, found) = self.search_union_types(types, t);
++        if !found {
++            types.insert(index, t);
++        }
++        !found
++    }
++
+     // Go: checker/checker.go:27093 countTypes
+     pub fn count_types(&self, t: TypeId) -> i32 {
+         let ty = self.ty(t);
+diff --git a/crates/ts_goport/src/checker/utilities_p1.rs b/crates/ts_goport/src/checker/utilities_p1.rs
+index 1536755c..26c7210b 100644
+--- a/crates/ts_goport/src/checker/utilities_p1.rs
++++ b/crates/ts_goport/src/checker/utilities_p1.rs
+@@ -818,13 +818,105 @@ fn compare_numbers(a: crate::jsnum::Number, b: crate::jsnum::Number) -> i32 {
+     0
+ }
+ 
+-impl Checker {
+-    // Go: checker/utilities.go:414 CompareTypes
+-    // PORT: Go panics when the types come from different checkers; one
+-    // checker owns all `TypeId`s here, so that check is dropped. Go calls
+-    // `t1.checker.compareSymbols`, which is always `compareSymbolsWorker`, so
+-    // this calls the worker directly and needs only `&self`.
+-    pub fn compare_types(&self, t1: TypeId, t2: TypeId) -> i32 {
++/// A comparison graph scoped to one immutable checker operation. A completed
++/// comparison is stable here: it either returned before lazy symbol IDs, or
++/// assigned the IDs it observed, which never change during this scope.
++/// Never retain this cache across checker mutation or worker ID-state changes.
++/// Collisions evict only optimization state and rerun the original comparison.
++pub(crate) struct ScopedTypeComparer<'a, const MEMO: bool> {
++    checker: &'a Checker,
++    memo: Vec<std::cell::Cell<TypeComparison>>,
++}
++
++#[derive(Clone, Copy, Default)]
++struct TypeComparison {
++    left: TypeId,
++    right: TypeId,
++    result: i32,
++}
++
++impl<'a> ScopedTypeComparer<'a, false> {
++    #[inline]
++    fn uncached(checker: &'a Checker) -> Self {
++        Self {
++            checker,
++            memo: Vec::new(),
++        }
++    }
++}
++
++impl<'a> ScopedTypeComparer<'a, true> {
++    pub(crate) fn memoized(checker: &'a Checker, work_items: usize) -> Self {
++        // 48 KiB, independent of the size of the compared type graph.
++        Self {
++            checker,
++            memo: if work_items >= 64 {
++                vec![std::cell::Cell::new(TypeComparison::default()); 4096]
++            } else {
++                Vec::new()
++            },
++        }
++    }
++}
++
++impl<const MEMO: bool> std::ops::Deref for ScopedTypeComparer<'_, MEMO> {
++    type Target = Checker;
++    fn deref(&self) -> &Checker {
++        self.checker
++    }
++}
++
++impl<const MEMO: bool> ScopedTypeComparer<'_, MEMO> {
++    #[inline]
++    pub(crate) fn compare_types(&self, t1: TypeId, t2: TypeId) -> i32 {
++        if !MEMO || self.memo.is_empty() {
++            return self.compare_types_uncached(t1, t2);
++        }
++        if t1 == t2 {
++            return 0;
++        }
++        if t1.is_nil() {
++            return -1;
++        }
++        if t2.is_nil() {
++            return 1;
++        }
++        let hash = u64::from(t1.0)
++            .wrapping_mul(0x9e37_79b9_7f4a_7c15)
++            .rotate_left(17)
++            ^ u64::from(t2.0).wrapping_mul(0xbf58_476d_1ce4_e5b9);
++        let slot = &self.memo[(hash >> 52) as usize];
++        let cached = slot.get();
++        if cached.left == t1 && cached.right == t2 {
++            return cached.result;
++        }
++        // Cell copies the entry: no borrow is held while recursion can use
++        // the same slot. Publish only AFTER the comparison completed.
++        let result = self.compare_types_uncached(t1, t2);
++        slot.set(TypeComparison {
++            left: t1,
++            right: t2,
++            result,
++        });
++        result
++    }
++
++    pub(crate) fn search_keyed_types(
++        &self,
++        keyed: &[(u128, TypeId)],
++        key: u128,
++        t: TypeId,
++    ) -> (usize, bool) {
++        crate::gostd::slices::binary_search_func(keyed, (key, t), |&(k1, t1), &(k2, t2)| {
++            if k1 != k2 {
++                if k1 < k2 { -1 } else { 1 }
++            } else {
++                self.compare_types(t1, t2)
++            }
++        })
++    }
++
++    fn compare_types_uncached(&self, t1: TypeId, t2: TypeId) -> i32 {
+         if t1 == t2 {
+             return 0;
+         }
+@@ -1152,6 +1244,115 @@ impl Checker {
+         // Fall back to type IDs. This results in type creation order for built-in types.
+         clamp_compare(i64::from(ty1.id.0) - i64::from(ty2.id.0))
+     }
++
++    #[inline(always)]
++    fn compare_type_names_of(&self, ty1: &Type, ty2: &Type) -> i32 {
++        let s1 = type_name_symbol(ty1);
++        let s2 = type_name_symbol(ty2);
++        if s1 == s2 {
++            let (a1, a2) = (ty1.alias.type_arguments(), ty2.alias.type_arguments());
++            // PERF: unionfn1. Two empty lists compare as 0 (`compare_type_lists`).
++            // Unnamed types (both symbols nil) take this branch, so skip the call.
++            if a1.is_empty() && a2.is_empty() {
++                return 0;
++            }
++            return self.compare_type_lists(a1, a2);
++        }
++        if s1.is_nil() {
++            return 1;
++        }
++        if s2.is_nil() {
++            return -1;
++        }
++        let (name1, name2) = (&self.sym(s1).name, &self.sym(s2).name);
++        // Equal name ids are equal texts, which compare as 0.
++        if name1 != name2 {
++            let c = compare_strings(name1, name2);
++            if c != 0 {
++                return c;
++            }
++        }
++        // Keep distinct same-named declarations together before comparing alias arguments or structure.
++        // PORT: Go `t1.checker.compareSymbols` is always the worker (see `compare_types`).
++        self.compare_symbols_worker(s1, s2)
++    }
++
++    fn compare_type_lists(&self, s1: &[TypeId], s2: &[TypeId]) -> i32 {
++        if s1.len() != s2.len() {
++            return s1.len() as i32 - s2.len() as i32;
++        }
++        // SharedList and alias clones often share the same immutable storage.
++        // Every element would compare with itself and return 0 without effects.
++        if s1.as_ptr() == s2.as_ptr() {
++            return 0;
++        }
++        for (&t1, &t2) in s1.iter().zip(s2) {
++            // PERF: unionfn1. `compare_types` of a type and itself is 0.
++            if t1 == t2 {
++                continue;
++            }
++            let c = self.compare_types(t1, t2);
++            if c != 0 {
++                return c;
++            }
++        }
++        0
++    }
++
++    fn compare_type_mappers(&self, m1: MapperId, m2: MapperId) -> i32 {
++        if m1 == m2 {
++            return 0;
++        }
++        if m1.is_nil() {
++            return 1;
++        }
++        if m2.is_nil() {
++            return -1;
++        }
++        let kind1 = self.mapper(m1).kind();
++        let kind2 = self.mapper(m2).kind();
++        if kind1 != kind2 {
++            return kind1 as i32 - kind2 as i32;
++        }
++        match (self.mapper(m1), self.mapper(m2)) {
++            (TypeMapper::Simple(m1), TypeMapper::Simple(m2)) => {
++                let c = self.compare_types(m1.source, m2.source);
++                if c != 0 {
++                    return c;
++                }
++                self.compare_types(m1.target, m2.target)
++            }
++            (TypeMapper::Array(m1, _), TypeMapper::Array(m2, _)) => {
++                let c = self.compare_type_lists(&m1.sources, &m2.sources);
++                if c != 0 {
++                    return c;
++                }
++                self.compare_type_lists(&m1.targets, &m2.targets)
++            }
++            (TypeMapper::Merged(m1), TypeMapper::Merged(m2)) => {
++                let (a1, a2, b1, b2) = (m1.m1, m1.m2, m2.m1, m2.m2);
++                let c = self.compare_type_mappers(a1, b1);
++                if c != 0 {
++                    return c;
++                }
++                self.compare_type_mappers(a2, b2)
++            }
++            // PORT: Go switches on `kind1`; kinds other than Simple, Array and
++            // Merged (all `TypeMapperKindUnknown`) fall through to `return 0`.
++            _ => 0,
++        }
++    }
++}
++
++impl Checker {
++    // Go: checker/utilities.go:414 CompareTypes
++    // PORT: Go panics when the types come from different checkers; one
++    // checker owns all `TypeId`s here, so that check is dropped. Go calls
++    // `t1.checker.compareSymbols`, which is always `compareSymbolsWorker`, so
++    // this calls the worker directly and needs only `&self`.
++    pub fn compare_types(&self, t1: TypeId, t2: TypeId) -> i32 {
++        ScopedTypeComparer::<false>::uncached(self).compare_types(t1, t2)
++    }
+ }
+ 
+ // PERF: unionsort1. The union sort and the union searches decide most
+@@ -1425,6 +1626,7 @@ impl Checker {
+             });
+             *t = TypeId(slot);
+         }
++        let comparer = ScopedTypeComparer::memoized(self, types.len());
+         crate::gostd::slices::sort_stable_func(types, |&a, &b| {
+             if a == b {
+                 return 0;
+@@ -1433,7 +1635,7 @@ impl Checker {
+             match x.keyed_order(y) {
+                 Ordering::Less => -1,
+                 Ordering::Greater => 1,
+-                Ordering::Equal => self.compare_types(x.t, y.t),
++                Ordering::Equal => comparer.compare_types(x.t, y.t),
+             }
+         });
+         for t in types.iter_mut() {
+@@ -1474,6 +1676,7 @@ impl Checker {
+     pub(crate) fn contains_types_by_entries(&self, targets: &[TypeId], sources: &[TypeId]) -> bool {
+         let table: Vec<LargeSortEntry> =
+             targets.iter().map(|&t| self.large_sort_entry(t)).collect();
++        let comparer = ScopedTypeComparer::memoized(self, sources.len());
+         sources.iter().all(|&t| {
+             let entry = self.large_sort_entry(t);
+             crate::gostd::slices::binary_search_func(&table, entry, |x, y| {
+@@ -1484,7 +1687,7 @@ impl Checker {
+                 match x.keyed_order(y) {
+                     Ordering::Less => -1,
+                     Ordering::Greater => 1,
+-                    Ordering::Equal => self.compare_types(x.t, y.t),
++                    Ordering::Equal => comparer.compare_types(x.t, y.t),
+                 }
+             })
+             .1
+@@ -1587,34 +1790,7 @@ impl Checker {
+     // the arena. unionfn1: inlined into `compare_types`, its one caller.
+     #[inline(always)]
+     pub fn compare_type_names_of(&self, ty1: &Type, ty2: &Type) -> i32 {
+-        let s1 = type_name_symbol(ty1);
+-        let s2 = type_name_symbol(ty2);
+-        if s1 == s2 {
+-            let (a1, a2) = (ty1.alias.type_arguments(), ty2.alias.type_arguments());
+-            // PERF: unionfn1. Two empty lists compare as 0 (`compare_type_lists`).
+-            // Unnamed types (both symbols nil) take this branch, so skip the call.
+-            if a1.is_empty() && a2.is_empty() {
+-                return 0;
+-            }
+-            return self.compare_type_lists(a1, a2);
+-        }
+-        if s1.is_nil() {
+-            return 1;
+-        }
+-        if s2.is_nil() {
+-            return -1;
+-        }
+-        let (name1, name2) = (&self.sym(s1).name, &self.sym(s2).name);
+-        // Equal name ids are equal texts, which compare as 0.
+-        if name1 != name2 {
+-            let c = compare_strings(name1, name2);
+-            if c != 0 {
+-                return c;
+-            }
+-        }
+-        // Keep distinct same-named declarations together before comparing alias arguments or structure.
+-        // PORT: Go `t1.checker.compareSymbols` is always the worker (see `compare_types`).
+-        self.compare_symbols_worker(s1, s2)
++        ScopedTypeComparer::<false>::uncached(self).compare_type_names_of(ty1, ty2)
+     }
+ 
+     // Go: checker/utilities.go:651 getTypeNameSymbol
+@@ -1702,65 +1878,12 @@ pub fn compare_element_labels(n1: Node, n2: Node) -> i32 {
+ impl Checker {
+     // Go: checker/utilities.go:704 compareTypeLists
+     pub fn compare_type_lists(&self, s1: &[TypeId], s2: &[TypeId]) -> i32 {
+-        if s1.len() != s2.len() {
+-            return s1.len() as i32 - s2.len() as i32;
+-        }
+-        for (&t1, &t2) in s1.iter().zip(s2) {
+-            // PERF: unionfn1. `compare_types` of a type and itself is 0.
+-            if t1 == t2 {
+-                continue;
+-            }
+-            let c = self.compare_types(t1, t2);
+-            if c != 0 {
+-                return c;
+-            }
+-        }
+-        0
++        ScopedTypeComparer::<false>::uncached(self).compare_type_lists(s1, s2)
+     }
+ 
+     // Go: checker/utilities.go:716 compareTypeMappers
+     pub fn compare_type_mappers(&self, m1: MapperId, m2: MapperId) -> i32 {
+-        if m1 == m2 {
+-            return 0;
+-        }
+-        if m1.is_nil() {
+-            return 1;
+-        }
+-        if m2.is_nil() {
+-            return -1;
+-        }
+-        let kind1 = self.mapper(m1).kind();
+-        let kind2 = self.mapper(m2).kind();
+-        if kind1 != kind2 {
+-            return kind1 as i32 - kind2 as i32;
+-        }
+-        match (self.mapper(m1), self.mapper(m2)) {
+-            (TypeMapper::Simple(m1), TypeMapper::Simple(m2)) => {
+-                let c = self.compare_types(m1.source, m2.source);
+-                if c != 0 {
+-                    return c;
+-                }
+-                self.compare_types(m1.target, m2.target)
+-            }
+-            (TypeMapper::Array(m1, _), TypeMapper::Array(m2, _)) => {
+-                let c = self.compare_type_lists(&m1.sources, &m2.sources);
+-                if c != 0 {
+-                    return c;
+-                }
+-                self.compare_type_lists(&m1.targets, &m2.targets)
+-            }
+-            (TypeMapper::Merged(m1), TypeMapper::Merged(m2)) => {
+-                let (a1, a2, b1, b2) = (m1.m1, m1.m2, m2.m1, m2.m2);
+-                let c = self.compare_type_mappers(a1, b1);
+-                if c != 0 {
+-                    return c;
+-                }
+-                self.compare_type_mappers(a2, b2)
+-            }
+-            // PORT: Go switches on `kind1`; kinds other than Simple, Array and
+-            // Merged (all `TypeMapperKindUnknown`) fall through to `return 0`.
+-            _ => 0,
+-        }
++        ScopedTypeComparer::<false>::uncached(self).compare_type_mappers(m1, m2)
+     }
+ 
+     // Go: checker/utilities.go:757 getDeclarationModifierFlagsFromSymbol

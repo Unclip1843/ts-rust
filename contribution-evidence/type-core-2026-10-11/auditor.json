@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "auditor": "independent-regression-auditor",
+  "verdict": "PASS_FOR_HONEST_DRAFT_EVIDENCE_SCOPE_NOT_ACCEPTANCE",
+  "freshSubmissionParent": "bf34f21ae40b221ea9def389778d2f90ec950398",
+  "patches": {
+    "1-owned-insertion": {
+      "sha256": "e52ad6a99bf28fbddff5fe872694182ec7c59f1fb614ab32a930c6312cee3544",
+      "files": [
+        "crates/ts_goport/src/checker/checker_p28.rs",
+        "crates/ts_goport/src/checker/checker_p29.rs"
+      ],
+      "source": "upstream-review-2026-10-11/1-owned-insertion.patch",
+      "exactHeadBuildOrTests": "UNRUN"
+    },
+    "2-declaration-storage": {
+      "sha256": "4cdf43ba482365a424eb0460be4d109bebc25dcb2fcf9343250e344fb5e00988",
+      "files": [
+        "crates/ts_goport/src/checker/checker_p24.rs"
+      ],
+      "source": "upstream-review-2026-10-11/2-declaration-storage.patch",
+      "exactHeadBuildOrTests": "UNRUN"
+    },
+    "3-shared-slice": {
+      "sha256": "4f5f85f5002f6e9804e57cd057f7e0c7ccc634ede9a39c8a4cfd06f8ace6e170",
+      "files": [
+        "crates/ts_goport/src/checker/utilities_p1.rs"
+      ],
+      "source": "upstream-review-2026-10-11/3-shared-slice.patch",
+      "exactHeadBuildOrTests": "UNRUN"
+    }
+  },
+  "historicalEvidence": {
+    "baseCommit": "9f6ee6d147de1f8216c967e2a966cacbac295984",
+    "measuredCombinedFingerprint": "fe64b5a4ffddf99517bf8f134d26ba49c2e030c8d3867b2b95ddce7355e90d0d",
+    "combinedSourceHashes": {
+      "crates/ts_goport/src/checker/checker_p24.rs": "39fcb798ccd774d10a4acfa9da429365a27636f50a07eeab6fb17a4a71b01472",
+      "crates/ts_goport/src/checker/checker_p28.rs": "87f7cd8551b007c1e5f19c141090b4c547c7d6a9eeb76694876ac8c2660007ed",
+      "crates/ts_goport/src/checker/checker_p29.rs": "22d2e1b86f57400c792598ef7885ed5bff8bb0d5f75b022eb13ab9bdb76a848e",
+      "crates/ts_goport/src/checker/utilities_p1.rs": "800f7ae2caca79bc47ca0cd320c1bef20d128c73fbf4a56ae8d15f204626d4ed",
+      "proofs/IntersectionPruning.lean": "347c02a52654dda4910c1ed64fce1d28267ecc5da5286f38530bd026568d50af",
+      "proofs/UniqueDeclarationStorage.lean": "bb032a8aa7ea38cf7bdddb71ecae26248dfbbcbc6b47cc85f36841edc6dda303",
+      "proofs/ScopedComparisonCache.lean": "fd656e5c6c0e2df2a903620886abfc4ac69bff36b239db8d45c9ec4a9bdfa4ef"
+    },
+    "candidateBinarySha256": "58b623f0a2f681625a71716bece9565481d12bf1dbd6fce5dc9cd07487d83599",
+    "testBinarySha256": "45a792d758d4f47ae6f0f64f06571911bdc6fd6042826b89a6874f895c4244f1",
+    "goBinarySha256": "87c7767e0369afd43cf5a14bf5b26294dc6815122ded00ae8b8925ff2f57697b",
+    "scope": "All five changes on the old parent. Neither these three separately nor these three together have exact-head runtime or isolated benefit evidence.",
+    "compiler": {
+      "configuredCases": 13468,
+      "passingChecks": 133390,
+      "failedChecks": 0,
+      "explicitSkips": 1728,
+      "unsupportedConfigSkips": 1720,
+      "outputSkips": 8
+    },
+    "default": {
+      "initialPassed": 1529,
+      "initialFailed": 2,
+      "ignored": 1,
+      "filteredLocalCoveredInFourShards": 1,
+      "reviewedEnvironmentRerunPassed": 2,
+      "sameFrozenBinary": true,
+      "initialFailuresRetained": true
+    },
+    "transpilePassedChecks": 41,
+    "npmBeforeAndCandidatePassedEach": 879,
+    "npmFiles": 13,
+    "workspace": {
+      "retained": 629,
+      "newFailures": 0,
+      "unchangedAncestorPackageWatchFailure": 1,
+      "ignored": 2,
+      "exit": 101
+    },
+    "projects": "Query clean; Hono two TS7031 diagnostics identical to local original and fresh pinned Go. Historical combined-source evidence only."
+  },
+  "existingPublicEvidenceBundleHashes": [
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/report.json",
+      "sha256": "070e7575b7f6645107f14ed680e9d4b869b17bb56567ddb6075d27d9cb3f0ceb",
+      "bytes": 11498
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/measurements.json",
+      "sha256": "0042a997217154903d377d9b3a3c4f38ca66c79f8d4aed1110c5917d51120a7a",
+      "bytes": 165472
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/raw-evidence-sha256.json",
+      "sha256": "f26ff1567f6bcd7493f3dfe26d605e561e7ad967e13a5d6787bad819bc2dcd96",
+      "bytes": 110091
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/existing-test-comparison.json",
+      "sha256": "0e2a71e702dcf00d371484a1f23a5d74df069a8a48513eb22d1957c17530f432",
+      "bytes": 62947
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/qualification/final-reviewer.json",
+      "sha256": "7f645961330ba361ebe4aa897bdcf82e37422e9e9f9756c37074fa29b896efe0",
+      "bytes": 7749
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/qualification/test-list.txt.gz",
+      "sha256": "d09e1bbdfdb90c81cdffa163c1e0a4c2b16810f67478cd1a093c410aebe9b304",
+      "bytes": 19233
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/qualification/report.json",
+      "sha256": "14fc6a39749dedf790c5c20985a3a92e8aebfa40f2bd136200f3a9f2d7bd3175",
+      "bytes": 11599
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/qualification/npm-candidate.jsonl.gz",
+      "sha256": "77a3bd8d7757b72cbf679802c42ca245861f164fde30d534273830b410b4cca5",
+      "bytes": 20616
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/qualification/compiler-3.tsv.gz",
+      "sha256": "ee99656368e71db9e5d6ed8eb7b8541196c682d1a7c19d5533b5393939303466",
+      "bytes": 232057
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/qualification/compiler-1.tsv.gz",
+      "sha256": "35c7df1889428b8abcb956e54e70c5991ad7e0c2f100ce77febcdeecd97fa576",
+      "bytes": 231244
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/qualification/final-auditor.json",
+      "sha256": "f14bad79f2ecd72c683bc39cfbff6fe6cefe803fcc94dcc1e5bb030b6874e6b6",
+      "bytes": 17417
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/qualification/compiler-2.tsv.gz",
+      "sha256": "bb3dbccbf31bf8385aa8c675f9f293b15c92bfba816ea5bed910136e213b04ba",
+      "bytes": 233634
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/qualification/transpile-results.tsv.gz",
+      "sha256": "652f61e39e1415687b435d9311284bd18c4d421cd40e9013c5aceb572060f490",
+      "bytes": 661
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/qualification/default-test-results.txt.gz",
+      "sha256": "2ceb9da56b7573a10844d552567d77829d5651455889c5b9aef142fd804b4fa4",
+      "bytes": 19206
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/qualification/compiler-0.tsv.gz",
+      "sha256": "41bde6577af3c847aaacfe3d46c6122fd68d752b4ed586ec8f9d86d36cf3a152",
+      "bytes": 232082
+    },
+    {
+      "path": "docs/performance/type-core-local-2026-10-10/qualification/npm-before.jsonl.gz",
+      "sha256": "3044e03493f73aa48fde478c2a8bbd9991a8db4b8c94935b45a5d2b9946bda0f",
+      "bytes": 20531
+    }
+  ],
+  "rawPerformanceHashManifestVerified": {
+    "entries": 864,
+    "sha256": "f26ff1567f6bcd7493f3dfe26d605e561e7ad967e13a5d6787bad819bc2dcd96",
+    "rawFilesContainingPrivateAbsolutePaths": 0
+  },
+  "proofAttachments": {
+    "existingProofHashes": {
+      "UniqueDeclarationStorage.lean": "bb032a8aa7ea38cf7bdddb71ecae26248dfbbcbc6b47cc85f36841edc6dda303",
+      "IntersectionPruning.lean": "347c02a52654dda4910c1ed64fce1d28267ecc5da5286f38530bd026568d50af",
+      "ScopedComparisonCache.lean": "fd656e5c6c0e2df2a903620886abfc4ac69bff36b239db8d45c9ec4a9bdfa4ef"
+    },
+    "limits": "Lean proves model laws; Rust correspondence is manually reviewed. UniqueDeclarationStorage is relevant to PR2. Existing scoped-cache self-comparison theorem can support PR3 identity reasoning, but cache5 is excluded. A dedicated owned-insertion and shared-slice proof attachment should be identified and reviewed before claiming proof coverage for PR1/PR3; no such dedicated attachment audited here."
+  },
+  "publicWording": {
+    "required": "Draft submission with historical combined evidence attached; exact-parent-and-PR checks, isolated measurements and upstream protected qualification pending.",
+    "disallowedClaims": [
+      "Fresh first-three tests passed",
+      "Standalone or first-three measured speedup",
+      "Combined19.41percent gain belongs to first three",
+      "All-green workspace or no original failures",
+      "Skips count as passes",
+      "Lean proves whole Rust compiler equivalence",
+      "Draft submission means accepted or merge-qualified"
+    ],
+    "countCaveat": "Confirmed historical sourceFiles12400 counts only physical .ts files in compiler/conformance inventory (6701+5699), not all source files or successfully compiled files. Transpile has24.ts plus1.tsx, so its historical sourceFiles24 omits one.tsx. Preserve report bytes/hashes and publish an explicit erratum; draft wording uses verified13468configured cases,133390checks and41transpilechecks."
+  },
+  "publishRecommendation": [
+    "Publish portable evidence/performance and qualification reports, measurements, per-file raw hash manifest, all four compressed compiler ledgers, original default failures/list, transpile ledger and both npm ledgers.",
+    "Publish normalized full auditor/reviewer verdicts with original rawSha256 retained alongside normalized sha256.",
+    "Publish exact proposed patch/head identities and Lean files with theorem scope and toolchain; keep historical combined source manifest explicit.",
+    "Do not upload machine identity files, remote configs, project tarballs/node_modules, local binaries or unreviewed raw logs. Raw hashes preserve original integrity; normalized copies need separate hashes.",
+    "Raw performance stream hashes can be public; inspect or normalize private paths in any actual raw streams before publication."
+  ],
+  "maintainerProcessReference": {
+    "verifiedPage": "https://github.com/pingdotgg/ts-rust/pull/31",
+    "finding": "Public maintainer comment binds checks to main plus exact PR head: protected per-name retention, four-project output identity, lib blobs, lint/format/CI and quiet-host timing. It supports distinguishing draft submission from final qualification; it is not a promise that maintainer will run these drafts."
+  },
+  "noNewRuntimeOrSourceEdits": true,
+  "historicalSourceCountErratum": {
+    "inventory": {
+      "compiler": {
+        ".ts": 6701,
+        ".tsx": 138,
+        ".js": 1
+      },
+      "conformance": {
+        ".ts": 5699,
+        ".tsx": 211,
+        ".js": 1
+      },
+      "transpile": {
+        ".ts": 24,
+        ".tsx": 1
+      }
+    },
+    "tsOnlyCompilerConformanceCount": 12400,
+    "allCompilerConformanceTsTsxJsInputs": 12751,
+    "transpileTsTsxJsInputs": 25,
+    "historicalReportBytesMustRemainUnchanged": true,
+    "physicalInventoryNotCompiledConfigurations": true
+  }
+}
