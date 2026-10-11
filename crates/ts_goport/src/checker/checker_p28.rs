@@ -1304,8 +1304,7 @@ impl Checker {
             }
             if named_types_count + reduced_types.len() == type_set.len() {
                 for &t in &named_unions {
-                    let (inserted, _) = self.insert_type(&reduced_types, t);
-                    reduced_types = inserted;
+                    self.insert_type_into(&mut reduced_types, t);
                 }
                 origin = self.new_union_type(ObjectFlags::NONE, &reduced_types);
             }
@@ -1571,7 +1570,7 @@ impl Checker {
             for &t in types.iter() {
                 if let Some((variable, primitive)) = self.constrained_type_variable_parts_p28(t) {
                     if variable == type_variable {
-                        (primitives, _) = self.insert_type(&primitives, primitive);
+                        self.insert_type_into(&mut primitives, primitive);
                     }
                 }
             }

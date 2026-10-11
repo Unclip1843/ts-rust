@@ -523,8 +523,7 @@ impl Checker {
         for &u in &union_types {
             for i in 0..self.ty(u).types().len() {
                 let t = self.type_at(u, i);
-                let (new_checked, inserted) = self.insert_type(&checked, t);
-                checked = new_checked;
+                let inserted = self.insert_type_into(&mut checked, t);
                 if inserted {
                     if self.each_union_contains(&union_types, t) {
                         // undefinedType/missingType are always sorted first so we leverage that here
@@ -541,7 +540,7 @@ impl Checker {
                             result[0] = self.missing_type;
                             continue;
                         }
-                        result = self.insert_type(&result, t).0;
+                        self.insert_type_into(&mut result, t);
                     }
                 }
             }
@@ -960,6 +959,16 @@ impl Checker {
             }
             (_, true) => (types.to_vec(), false),
         }
+    }
+
+    /// Go `insertType` for an already owned buffer. Preserve the search and
+    /// its comparison effects, but retain capacity and copy nothing on a hit.
+    pub(crate) fn insert_type_into(&self, types: &mut Vec<TypeId>, t: TypeId) -> bool {
+        let (index, found) = self.search_union_types(types, t);
+        if !found {
+            types.insert(index, t);
+        }
+        !found
     }
 
     // Go: checker/checker.go:27093 countTypes
